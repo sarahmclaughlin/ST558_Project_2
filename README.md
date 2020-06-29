@@ -473,15 +473,32 @@ glmAllButFour
 
 Did not help. Will keep `self_reference_max_shares`.
 
-## Comparison of all Three Logistic Models
+## Comparison of all Four Logistic Models
 
 I will predict the test data and compare the RMSEs of those.
 
 ``` r
+#Make predictions  
 predALL <- predict(glmALL, newdata = data1Test, type = "link")
+predALLbutOne <- predict(glmAllButOne, newdata = data1Test, type = "link")
+predALLbutTwo <- predict(glmAllButTwo, newdata = data1Test, type = "link")
+predALLbutThree <- predict(glmAllButThree, newdata = data1Test, type = "link")
 
-#Calculate RMSE
-rmse(data1Test$logShares, predALL)
+#Calculate RMSE  
+AllMSE <- rmse(data1Test$logShares, predALL)
+OneMSE <- rmse(data1Test$logShares, predALLbutOne)
+TwoMSE <- rmse(data1Test$logShares, predALLbutTwo)
+ThreeMSE <- rmse(data1Test$logShares, predALLbutThree)
+
+matMSE <- matrix(c(AllMSE, OneMSE, TwoMSE, ThreeMSE), nrow = 1, ncol = 4, byrow = TRUE)
+
+matMSE
 ```
 
-    ## [1] 0.7923079
+    ##           [,1]     [,2]    [,3]      [,4]
+    ## [1,] 0.7923079 0.787188 0.78528 0.7626693
+
+### Analysis
+
+The glmAllButThree produces the smallest MSE. I will use this as my
+model for the data.
