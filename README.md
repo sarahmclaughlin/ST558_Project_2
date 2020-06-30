@@ -5,6 +5,26 @@ Sarah McLaughlin
 
 # Introduction
 
+The data that will be used in this project is from the *Online News
+Popularity Data Set* from the *UCI Machine Learning Repository*. The
+goal of this project is to create two models (one a linear model, the
+other an ensemble model) that will be used to predict the number of
+shares/the probability/if an article has more than 1400 shares. How I
+picked which variables is detailed below.
+
+The data is from Mashable (www.mashable.com) and contains the statistics
+for articles that were written and published on their website. There are
+statistics for 39,645 articles.
+
+In this project, I will attempt to create a linear regression model for
+the data, comparing the Adjusted R Squared values of the models. Due to
+the very low Adjusted R Squared models, I will instead move to a
+logistic model. These models produce very small RMSEs.
+
+I will also fit a Random Forest Classification model to the data. I have
+attempted a few different Random Forest Models but due to computing
+speed, have only included two models.
+
 # Data
 
 Here, I will bring in the data that will be used in this project. With
@@ -125,13 +145,34 @@ in our analysis and prediction:
 ## Select only needed variables from data for specific day
 
 ``` r
+day1 <-paste0("weekday_is_", params$day)
+
+day <- as.name(day1)
+
 data <- data %>% 
-  filter(weekday_is_monday == 1) %>% 
+  filter(eval(day) == 1) %>% 
   #select only needed variables. is_weekend not included
   select(shares, data_channel_is_socmed, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
          kw_avg_avg, self_reference_max_shares, global_subjectivity) %>% 
   collect()
 ```
+
+## Create CorrPlot of all variables
+
+``` r
+corr <- cor(select(data, everything()), method = "spearman")
+
+corrplot(corr, type = "upper", tl.pos = "lt")
+corrplot(corr, type = "lower", method = "number", add = TRUE, diag = FALSE, tl.pos = "n")
+```
+
+![](README_files/figure-gfm/corrplot-1.png)<!-- -->
+
+### Analysis
+
+There is a strong correlation between kw\_avg\_avg and kw\_max\_avg, as
+well as self\_reference\_max\_shares and self\_reference\_avg\_shares. I
+may include these as interactions effects.
 
 ## Make Train and Test Set
 
@@ -154,32 +195,38 @@ dataTest <- data[test, ]
 summary(dataTrain)
 ```
 
-    ##      shares         data_channel_is_socmed   kw_max_avg    
-    ##  Min.   :     1.0   Min.   :0.00000        Min.   :     0  
-    ##  1st Qu.:   922.2   1st Qu.:0.00000        1st Qu.:  3532  
-    ##  Median :  1400.0   Median :0.00000        Median :  4273  
-    ##  Mean   :  3582.0   Mean   :0.05105        Mean   :  5559  
-    ##  3rd Qu.:  2700.0   3rd Qu.:0.00000        3rd Qu.:  5954  
-    ##  Max.   :690400.0   Max.   :1.00000        Max.   :298400  
-    ##  self_reference_avg_sharess   kw_min_avg       kw_avg_avg   
-    ##  Min.   :     0             Min.   :   0.0   Min.   :    0  
-    ##  1st Qu.:  1031             1st Qu.:   0.0   1st Qu.: 2366  
-    ##  Median :  2200             Median : 989.2   Median : 2855  
-    ##  Mean   :  6269             Mean   :1082.4   Mean   : 3076  
-    ##  3rd Qu.:  5153             3rd Qu.:1996.0   3rd Qu.: 3554  
-    ##  Max.   :690400             Max.   :3594.6   Max.   :33536  
+    ##      shares       data_channel_is_socmed   kw_max_avg    
+    ##  Min.   :    42   Min.   :0.00000        Min.   :  2019  
+    ##  1st Qu.:   904   1st Qu.:0.00000        1st Qu.:  3524  
+    ##  Median :  1300   Median :0.00000        Median :  4255  
+    ##  Mean   :  3298   Mean   :0.06109        Mean   :  5554  
+    ##  3rd Qu.:  2500   3rd Qu.:0.00000        3rd Qu.:  5991  
+    ##  Max.   :441000   Max.   :1.00000        Max.   :139600  
+    ##  self_reference_avg_sharess   kw_min_avg       kw_avg_avg     
+    ##  Min.   :     0             Min.   :  -1.0   Min.   :  713.9  
+    ##  1st Qu.:   993             1st Qu.:   0.0   1st Qu.: 2344.4  
+    ##  Median :  2300             Median : 986.6   Median : 2836.5  
+    ##  Mean   :  5952             Mean   :1103.1   Mean   : 3114.4  
+    ##  3rd Qu.:  5300             3rd Qu.:2047.4   3rd Qu.: 3555.1  
+    ##  Max.   :663600             Max.   :3609.7   Max.   :27391.6  
     ##  self_reference_max_shares global_subjectivity
     ##  Min.   :     0            Min.   :0.0000     
-    ##  1st Qu.:  1100            1st Qu.:0.3965     
-    ##  Median :  2850            Median :0.4522     
-    ##  Mean   : 10015            Mean   :0.4422     
-    ##  3rd Qu.:  8000            3rd Qu.:0.5054     
+    ##  1st Qu.:  1100            1st Qu.:0.3952     
+    ##  Median :  2900            Median :0.4517     
+    ##  Mean   :  9639            Mean   :0.4402     
+    ##  3rd Qu.:  8200            3rd Qu.:0.5051     
     ##  Max.   :843300            Max.   :1.0000
 
-As will be used later, the median number of share for an article is
+As will be used later, the median number of shares for an article is
 1400. From the summaries, you can tell which variables are indicator
 variables (those with a min of 0 and max of 1;
-i.e. `data_channel_is_socmed` and `global_subjectivity`.)
+i.e. `data_channel_is_socmed` and `global_subjectivity`.) This also
+shows that the data will need to be standardized when I use the ensemble
+method.
+
+Overall, the data is quite varied (especially the average variables).
+You can see that the `shares` data and `self_reference_avg_share` data
+have the same range.
 
 ## Compare Fit Stats Function to compare models
 
@@ -218,61 +265,76 @@ allVarFit
     ## 
     ## Coefficients:
     ##                (Intercept)      data_channel_is_socmed  
-    ##                 -3.513e+03                   1.821e+02  
+    ##                 -2.342e+03                   4.075e+02  
     ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -2.727e-01                   4.343e-04  
+    ##                 -2.850e-01                   4.514e-02  
     ##                 kw_min_avg                  kw_avg_avg  
-    ##                 -6.544e-01                   2.560e+00  
+    ##                 -6.838e-01                   2.458e+00  
     ##  self_reference_max_shares         global_subjectivity  
-    ##                  1.062e-03                   3.215e+03
+    ##                 -1.771e-02                   4.506e+02
 
-Then, I will create another linear model without the `kw_min_avg`
-variable just to be able to compare fits.
+Then, I will create another linear model with the interaction effects to
+see if it makes a difference.
 
-**allButOne**
+**intLM**
 
 ``` r
-allButOne <- lm(shares ~ data_channel_is_socmed + 
-                  kw_max_avg + 
+intLM <- lm(shares ~ data_channel_is_socmed + 
+                  kw_max_avg + kw_min_avg +
                   self_reference_avg_sharess +
                   kw_avg_avg +
                   self_reference_max_shares +
-                  global_subjectivity, 
+                  global_subjectivity + 
+                  kw_avg_avg:kw_max_avg + 
+                  self_reference_max_shares:self_reference_avg_sharess, 
                 data = dataTrain
 )
 
-allButOne
+intLM
 ```
 
     ## 
     ## Call:
-    ## lm(formula = shares ~ data_channel_is_socmed + kw_max_avg + self_reference_avg_sharess + 
-    ##     kw_avg_avg + self_reference_max_shares + global_subjectivity, 
+    ## lm(formula = shares ~ data_channel_is_socmed + kw_max_avg + kw_min_avg + 
+    ##     self_reference_avg_sharess + kw_avg_avg + self_reference_max_shares + 
+    ##     global_subjectivity + kw_avg_avg:kw_max_avg + self_reference_max_shares:self_reference_avg_sharess, 
     ##     data = dataTrain)
     ## 
     ## Coefficients:
-    ##                (Intercept)      data_channel_is_socmed  
-    ##                 -2.865e+03                   1.536e+02  
-    ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -1.996e-01                   5.152e-04  
-    ##                 kw_avg_avg   self_reference_max_shares  
-    ##                  1.998e+00                   6.344e-04  
-    ##        global_subjectivity  
-    ##                  3.151e+03
+    ##                                          (Intercept)  
+    ##                                           -2.357e+03  
+    ##                               data_channel_is_socmed  
+    ##                                            2.757e+02  
+    ##                                           kw_max_avg  
+    ##                                           -1.549e-01  
+    ##                                           kw_min_avg  
+    ##                                           -6.333e-01  
+    ##                           self_reference_avg_sharess  
+    ##                                            7.030e-02  
+    ##                                           kw_avg_avg  
+    ##                                            2.274e+00  
+    ##                            self_reference_max_shares  
+    ##                                           -8.628e-04  
+    ##                                  global_subjectivity  
+    ##                                           -9.871e+01  
+    ##                                kw_max_avg:kw_avg_avg  
+    ##                                           -8.316e-06  
+    ## self_reference_avg_sharess:self_reference_max_shares  
+    ##                                           -1.033e-07
 
 ## Comparison of Two Models
 
 I will compare the two models using the compareFitStats function.
 
 ``` r
-compareFitStats(allVarFit, allButOne)
+compareFitStats(allVarFit, intLM)
 ```
 
     ##        fitStat       col1       col2
-    ## 1 Adj R Square      0.018      0.016
-    ## 2          AIC 101888.286 101894.695
-    ## 3         AICc 101888.325 101894.726
-    ## 4          BIC 101946.311 101946.273
+    ## 1 Adj R Square      0.026      0.029
+    ## 2          AIC 110645.441 110631.413
+    ## 3         AICc 110645.475 110631.464
+    ## 4          BIC 110704.401 110703.476
 
 ### Analysis
 
@@ -306,20 +368,20 @@ data1Test <- data1[test, ]
 data1
 ```
 
-    ## # A tibble: 6,661 x 8
+    ## # A tibble: 7,390 x 8
     ##    logShares data_channel_is~ kw_max_avg self_reference_~ kw_min_avg kw_avg_avg
     ##        <dbl>            <dbl>      <dbl>            <dbl>      <dbl>      <dbl>
-    ##  1         0                0          0             496           0          0
-    ##  2         0                0          0               0           0          0
-    ##  3         1                0          0             918           0          0
-    ##  4         0                0          0               0           0          0
-    ##  5         0                0          0            3151.          0          0
-    ##  6         0                0          0            8500           0          0
-    ##  7         0                0          0            3151.          0          0
-    ##  8         0                0          0            3151.          0          0
-    ##  9         1                0          0               0           0          0
-    ## 10         0                0          0               0           0          0
-    ## # ... with 6,651 more rows, and 2 more variables:
+    ##  1         0                0      2019.            3100           0       804.
+    ##  2         0                0      2019.               0           0       728.
+    ##  3         1                0      2318.             727           0      1185.
+    ##  4         0                0      2019.             951           0      1114.
+    ##  5         0                0      2193.            1300           0       885.
+    ##  6         0                0      2154.               0           0      1191.
+    ##  7         1                0      2103.            3151.        480      1539.
+    ##  8         1                0      4660.            2700           0      1400.
+    ##  9         0                0      5700                0           0      1803.
+    ## 10         1                0      2019.           20900           0       714.
+    ## # ... with 7,380 more rows, and 2 more variables:
     ## #   self_reference_max_shares <dbl>, global_subjectivity <dbl>
 
 Here, I will fit a logistic regression model using the `glm()` function
@@ -339,17 +401,17 @@ glmALL
     ## 
     ## Coefficients:
     ##                (Intercept)      data_channel_is_socmed  
-    ##                 -1.628e+00                   1.105e+00  
+    ##                 -1.638e+00                   1.001e+00  
     ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -6.630e-05                   7.798e-06  
+    ##                 -7.657e-05                   1.538e-05  
     ##                 kw_min_avg                  kw_avg_avg  
-    ##                 -1.057e-04                   5.595e-04  
+    ##                 -1.573e-04                   6.383e-04  
     ##  self_reference_max_shares         global_subjectivity  
-    ##                  6.940e-08                   7.835e-01  
+    ##                 -4.919e-06                   3.520e-01  
     ## 
-    ## Degrees of Freedom: 4661 Total (i.e. Null);  4654 Residual
-    ## Null Deviance:       6460 
-    ## Residual Deviance: 6186  AIC: 6202
+    ## Degrees of Freedom: 5172 Total (i.e. Null);  5165 Residual
+    ## Null Deviance:       7171 
+    ## Residual Deviance: 6850  AIC: 6866
 
 I will remove `kw_avg_min` variable just to be able to compare fits of
 the two logistic models.
@@ -377,23 +439,24 @@ glmAllButOne
     ## 
     ## Coefficients:
     ##                (Intercept)      data_channel_is_socmed  
-    ##                 -1.514e+00                   1.104e+00  
+    ##                 -1.458e+00                   9.962e-01  
     ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -5.326e-05                   8.270e-06  
+    ##                 -5.089e-05                   1.642e-05  
     ##                 kw_avg_avg   self_reference_max_shares  
-    ##                  4.637e-04                  -1.379e-07  
+    ##                  4.740e-04                  -5.281e-06  
     ##        global_subjectivity  
-    ##                  7.670e-01  
+    ##                  3.809e-01  
     ## 
-    ## Degrees of Freedom: 4661 Total (i.e. Null);  4655 Residual
-    ## Null Deviance:       6460 
-    ## Residual Deviance: 6196  AIC: 6210
+    ## Degrees of Freedom: 5172 Total (i.e. Null);  5166 Residual
+    ## Null Deviance:       7171 
+    ## Residual Deviance: 6871  AIC: 6885
 
 ### Analysis
 
 The AIC for the glmAllButOne model is much higher than the all variable
 model. I will remove another variable, `global_subjectivity` (next
-smallest correlation) and see if that helps.  
+smallest correlation) and see if that helps.
+
 **glm All But Two Model**
 
 ``` r
@@ -416,15 +479,15 @@ glmAllButTwo
     ## 
     ## Coefficients:
     ##                (Intercept)      data_channel_is_socmed  
-    ##                 -1.186e+00                   1.113e+00  
+    ##                 -1.293e+00                   1.000e+00  
     ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -5.373e-05                   9.100e-06  
+    ##                 -5.071e-05                   1.688e-05  
     ##                 kw_avg_avg   self_reference_max_shares  
-    ##                  4.668e-04                  -2.737e-07  
+    ##                  4.737e-04                  -5.330e-06  
     ## 
-    ## Degrees of Freedom: 4661 Total (i.e. Null);  4656 Residual
-    ## Null Deviance:       6460 
-    ## Residual Deviance: 6204  AIC: 6216
+    ## Degrees of Freedom: 5172 Total (i.e. Null);  5167 Residual
+    ## Null Deviance:       7171 
+    ## Residual Deviance: 6873  AIC: 6885
 
 \#\#Analysis  
 Remove `data_channel_is_socmed`.
@@ -451,15 +514,15 @@ glmAllButThree
     ## 
     ## Coefficients:
     ##                (Intercept)                  kw_max_avg  
-    ##                 -1.140e+00                  -5.515e-05  
+    ##                 -1.255e+00                  -5.463e-05  
     ## self_reference_avg_sharess                  kw_avg_avg  
-    ##                  9.951e-06                   4.699e-04  
+    ##                  1.605e-05                   4.858e-04  
     ##  self_reference_max_shares  
-    ##                 -3.260e-07  
+    ##                 -4.450e-06  
     ## 
-    ## Degrees of Freedom: 4661 Total (i.e. Null);  4657 Residual
-    ## Null Deviance:       6460 
-    ## Residual Deviance: 6262  AIC: 6272
+    ## Degrees of Freedom: 5172 Total (i.e. Null);  5168 Residual
+    ## Null Deviance:       7171 
+    ## Residual Deviance: 6937  AIC: 6947
 
 \#\#Analysis  
 Remove `self_reference_max_shares`.
@@ -483,13 +546,13 @@ glmAllButFour
     ## 
     ## Coefficients:
     ##                (Intercept)                  kw_max_avg  
-    ##                 -1.141e+00                  -5.527e-05  
+    ##                 -1.252e+00                  -5.453e-05  
     ## self_reference_avg_sharess                  kw_avg_avg  
-    ##                  9.393e-06                   4.703e-04  
+    ##                  8.433e-06                   4.856e-04  
     ## 
-    ## Degrees of Freedom: 4661 Total (i.e. Null);  4658 Residual
-    ## Null Deviance:       6460 
-    ## Residual Deviance: 6262  AIC: 6270
+    ## Degrees of Freedom: 5172 Total (i.e. Null);  5169 Residual
+    ## Null Deviance:       7171 
+    ## Residual Deviance: 6941  AIC: 6949
 
 ## Analysis
 
@@ -517,8 +580,8 @@ matMSE <- matrix(c(AllMSE, OneMSE, TwoMSE, ThreeMSE), nrow = 1, ncol = 4, byrow 
 matMSE
 ```
 
-    ##           [,1]     [,2]    [,3]      [,4]
-    ## [1,] 0.7923079 0.787188 0.78528 0.7626693
+    ##           [,1]      [,2]      [,3]      [,4]
+    ## [1,] 0.8399529 0.8395468 0.8429256 0.8239479
 
 ### Analysis
 
@@ -531,7 +594,7 @@ value.
 From the past homework assigment, it seems that each of the ensemble
 methods that we covered are equally efficient. I am going to use the
 Random Forest model to fit my data. Overall, Random Forest is better
-than baggin and boosting trees take longer to do.I will add a class
+than bagging and boosting trees take longer to do. I will add a class
 variable (less than 1400, more than 1400) that I will predict on the
 test data.
 
@@ -539,33 +602,35 @@ test data.
 
 ``` r
 dataTrain <- dataTrain %>% mutate(group = ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
-  select(group, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
-         kw_avg_avg, self_reference_max_shares, global_subjectivity) %>% collect()
+  select(group, kw_max_avg, self_reference_avg_sharess, 
+         kw_min_avg, kw_avg_avg, self_reference_max_shares, 
+         global_subjectivity) %>% collect()
 
 dataTrain$group <- as.factor(dataTrain$group)
 
 dataTrain
 ```
 
-    ## # A tibble: 4,662 x 7
+    ## # A tibble: 5,173 x 7
     ##    group kw_max_avg self_reference_~ kw_min_avg kw_avg_avg self_reference_~
     ##    <fct>      <dbl>            <dbl>      <dbl>      <dbl>            <dbl>
-    ##  1 more~     10975             9340       1818.      4102.            23700
-    ##  2 less~      3535.            1656.      1809.      2659.             2600
-    ##  3 less~      5605.            3020       1100       3529.             5200
-    ##  4 more~      7700             1400       2969.      3953.             1400
-    ##  5 less~      3272.            1000       1051.      2229.             1000
-    ##  6 less~      3927.            2600          0       1933.             2600
-    ##  7 less~      7632              914       1783.      3487.             1600
-    ##  8 less~      3281.            5450       2623.      2879.             7900
-    ##  9 more~      7182.            7950       3510.      5375.            43100
-    ## 10 less~      4275.            1024.         0       2824.             1700
-    ## # ... with 4,652 more rows, and 1 more variable: global_subjectivity <dbl>
+    ##  1 more~      4650             1833.         0       2737.             3300
+    ##  2 less~      3430.            1800       1005.      2582.             2400
+    ##  3 less~      5386.               0          0       2923.                0
+    ##  4 less~      7240.            2531       3524.      5502.             4100
+    ##  5 more~      4000             6646.      1533.      3227.            53100
+    ##  6 less~      4124.            1900          0       2696.             2100
+    ##  7 less~      3954.            3400       2879.      3421.             5200
+    ##  8 less~      3272.            6788.         0       1919.            23100
+    ##  9 less~      4346.             876.      1295.      2857.              995
+    ## 10 more~      7787.            3800       3484.      5258.             4100
+    ## # ... with 5,163 more rows, and 1 more variable: global_subjectivity <dbl>
 
 ``` r
 dataTest <- dataTest %>% mutate(group =ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
-  select(group, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
-         kw_avg_avg, self_reference_max_shares, global_subjectivity) %>% collect()
+  select(group, kw_max_avg, self_reference_avg_sharess, 
+         kw_min_avg, kw_avg_avg, self_reference_max_shares, 
+         global_subjectivity) %>% collect()
 
 dataTest$group <- as.factor(dataTest$group)
 ```
@@ -595,8 +660,8 @@ fullTbl
 
     ##                 dataTest.group
     ## rfPred           less than 1400 more than 1400
-    ##   less than 1400            683            424
-    ##   more than 1400            384            508
+    ##   less than 1400            812            514
+    ##   more than 1400            398            493
 
 **Find MisClassification Rate**
 
@@ -606,7 +671,7 @@ rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
 rfMis
 ```
 
-    ## [1] 0.4042021
+    ## [1] 0.4113667
 
 ### Analysis
 
@@ -616,10 +681,11 @@ to see if it helps.
 **One Variable Random Forest**
 
 ``` r
-rf1 <- train(group ~ kw_avg_avg + kw_max_avg, data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))  
+# no kw_min_avg, has lowest correlation 
+rf1 <- train(group ~ kw_max_avg + self_reference_avg_sharess +  
+         + kw_avg_avg + self_reference_max_shares +  
+         global_subjectivity, data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))  
 ```
-
-    ## note: only 1 unique complexity parameters in default grid. Truncating the grid to 1 .
 
 **Predict Data with rf1**
 
@@ -637,8 +703,8 @@ fullTbl
 
     ##                 dataTest.group
     ## rf1Pred          less than 1400 more than 1400
-    ##   less than 1400            635            487
-    ##   more than 1400            432            445
+    ##   less than 1400            812            526
+    ##   more than 1400            398            481
 
 **Find MisClassification Rate**
 
@@ -648,4 +714,16 @@ rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
 rfMis
 ```
 
-    ## [1] 0.4597299
+    ## [1] 0.4167794
+
+### Analysis
+
+This does not help. I will keep my first Random Forest Model for
+prediction.
+
+# Models Used
+
+Overall, I have chosen the following models for my data.
+
+1.  glmAllbutThree: Logistic Regression Model  
+2.  rfFit : Random Forest Model
