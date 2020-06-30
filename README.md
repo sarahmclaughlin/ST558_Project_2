@@ -126,31 +126,12 @@ in our analysis and prediction:
 
 ``` r
 data <- data %>% 
-  #filer by weekday
   filter(weekday_is_monday == 1) %>% 
   #select only needed variables. is_weekend not included
   select(shares, data_channel_is_socmed, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
          kw_avg_avg, self_reference_max_shares, global_subjectivity) %>% 
   collect()
-
-data
 ```
-
-    ## # A tibble: 6,661 x 8
-    ##    shares data_channel_is~ kw_max_avg self_reference_~ kw_min_avg kw_avg_avg
-    ##     <dbl>            <dbl>      <dbl>            <dbl>      <dbl>      <dbl>
-    ##  1    593                0          0             496           0          0
-    ##  2    711                0          0               0           0          0
-    ##  3   1500                0          0             918           0          0
-    ##  4   1200                0          0               0           0          0
-    ##  5    505                0          0            3151.          0          0
-    ##  6    855                0          0            8500           0          0
-    ##  7    556                0          0            3151.          0          0
-    ##  8    891                0          0            3151.          0          0
-    ##  9   3600                0          0               0           0          0
-    ## 10    710                0          0               0           0          0
-    ## # ... with 6,651 more rows, and 2 more variables:
-    ## #   self_reference_max_shares <dbl>, global_subjectivity <dbl>
 
 ## Make Train and Test Set
 
@@ -166,6 +147,39 @@ test <- setdiff(1:nrow(data), train)
 dataTrain <- data[train, ]
 dataTest <- data[test, ]
 ```
+
+**Run Quick Summaries on Train Data**
+
+``` r
+summary(dataTrain)
+```
+
+    ##      shares         data_channel_is_socmed   kw_max_avg    
+    ##  Min.   :     1.0   Min.   :0.00000        Min.   :     0  
+    ##  1st Qu.:   922.2   1st Qu.:0.00000        1st Qu.:  3532  
+    ##  Median :  1400.0   Median :0.00000        Median :  4273  
+    ##  Mean   :  3582.0   Mean   :0.05105        Mean   :  5559  
+    ##  3rd Qu.:  2700.0   3rd Qu.:0.00000        3rd Qu.:  5954  
+    ##  Max.   :690400.0   Max.   :1.00000        Max.   :298400  
+    ##  self_reference_avg_sharess   kw_min_avg       kw_avg_avg   
+    ##  Min.   :     0             Min.   :   0.0   Min.   :    0  
+    ##  1st Qu.:  1031             1st Qu.:   0.0   1st Qu.: 2366  
+    ##  Median :  2200             Median : 989.2   Median : 2855  
+    ##  Mean   :  6269             Mean   :1082.4   Mean   : 3076  
+    ##  3rd Qu.:  5153             3rd Qu.:1996.0   3rd Qu.: 3554  
+    ##  Max.   :690400             Max.   :3594.6   Max.   :33536  
+    ##  self_reference_max_shares global_subjectivity
+    ##  Min.   :     0            Min.   :0.0000     
+    ##  1st Qu.:  1100            1st Qu.:0.3965     
+    ##  Median :  2850            Median :0.4522     
+    ##  Mean   : 10015            Mean   :0.4422     
+    ##  3rd Qu.:  8000            3rd Qu.:0.5054     
+    ##  Max.   :843300            Max.   :1.0000
+
+As will be used later, the median number of share for an article is
+1400. From the summaries, you can tell which variables are indicator
+variables (those with a min of 0 and max of 1;
+i.e. `data_channel_is_socmed` and `global_subjectivity`.)
 
 ## Compare Fit Stats Function to compare models
 
@@ -309,7 +323,9 @@ data1
     ## #   self_reference_max_shares <dbl>, global_subjectivity <dbl>
 
 Here, I will fit a logistic regression model using the `glm()` function
-with the `"binomial"` family.  
+with the `"binomial"` family. I will look at how the removal of certain
+variables changes the AIC value for each model.
+
 **GLM ALL Model**
 
 ``` r
@@ -378,7 +394,7 @@ glmAllButOne
 The AIC for the glmAllButOne model is much higher than the all variable
 model. I will remove another variable, `global_subjectivity` (next
 smallest correlation) and see if that helps.  
-**glmAllButTwo**
+**glm All But Two Model**
 
 ``` r
 glmAllButTwo <- glm(logShares ~ data_channel_is_socmed + 
@@ -410,8 +426,10 @@ glmAllButTwo
     ## Null Deviance:       6460 
     ## Residual Deviance: 6204  AIC: 6216
 
-Remove `data_channel_is_socmed`.  
-**glmAllButThree**
+\#\#Analysis  
+Remove `data_channel_is_socmed`.
+
+**glm All But Three Model**
 
 ``` r
 glmAllButThree <- glm(logShares ~ 
@@ -443,8 +461,10 @@ glmAllButThree
     ## Null Deviance:       6460 
     ## Residual Deviance: 6262  AIC: 6272
 
-Remove `self_reference_max_shares`.  
-**glmAllButFour**
+\#\#Analysis  
+Remove `self_reference_max_shares`.
+
+**glm All But Four Model**
 
 ``` r
 glmAllButFour <- glm(logShares ~ 
@@ -470,6 +490,8 @@ glmAllButFour
     ## Degrees of Freedom: 4661 Total (i.e. Null);  4658 Residual
     ## Null Deviance:       6460 
     ## Residual Deviance: 6262  AIC: 6270
+
+## Analysis
 
 Did not help. Will keep `self_reference_max_shares`.
 
@@ -501,4 +523,129 @@ matMSE
 ### Analysis
 
 The glmAllButThree produces the smallest MSE. I will use this as my
-model for the data.
+model for the data. The glmAllButThree also produces the highest AIC
+value.
+
+# Ensemble Model
+
+From the past homework assigment, it seems that each of the ensemble
+methods that we covered are equally efficient. I am going to use the
+Random Forest model to fit my data. Overall, Random Forest is better
+than baggin and boosting trees take longer to do.I will add a class
+variable (less than 1400, more than 1400) that I will predict on the
+test data.
+
+## Fix Train and Test Data
+
+``` r
+dataTrain <- dataTrain %>% mutate(group = ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
+  select(group, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
+         kw_avg_avg, self_reference_max_shares, global_subjectivity) %>% collect()
+
+dataTrain$group <- as.factor(dataTrain$group)
+
+dataTrain
+```
+
+    ## # A tibble: 4,662 x 7
+    ##    group kw_max_avg self_reference_~ kw_min_avg kw_avg_avg self_reference_~
+    ##    <fct>      <dbl>            <dbl>      <dbl>      <dbl>            <dbl>
+    ##  1 more~     10975             9340       1818.      4102.            23700
+    ##  2 less~      3535.            1656.      1809.      2659.             2600
+    ##  3 less~      5605.            3020       1100       3529.             5200
+    ##  4 more~      7700             1400       2969.      3953.             1400
+    ##  5 less~      3272.            1000       1051.      2229.             1000
+    ##  6 less~      3927.            2600          0       1933.             2600
+    ##  7 less~      7632              914       1783.      3487.             1600
+    ##  8 less~      3281.            5450       2623.      2879.             7900
+    ##  9 more~      7182.            7950       3510.      5375.            43100
+    ## 10 less~      4275.            1024.         0       2824.             1700
+    ## # ... with 4,652 more rows, and 1 more variable: global_subjectivity <dbl>
+
+``` r
+dataTest <- dataTest %>% mutate(group =ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
+  select(group, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
+         kw_avg_avg, self_reference_max_shares, global_subjectivity) %>% collect()
+
+dataTest$group <- as.factor(dataTest$group)
+```
+
+**Random Forest Model**
+
+``` r
+# train control parameters  
+trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+
+rfFit<- train(group~., data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))
+```
+
+**Predict Data with rfFit**
+
+``` r
+rfPred <- predict(rfFit, select(dataTest, -"group"))
+```
+
+**Compare Predictions to Actual**
+
+``` r
+fullTbl <- table(data.frame(rfPred, dataTest$group))
+
+fullTbl
+```
+
+    ##                 dataTest.group
+    ## rfPred           less than 1400 more than 1400
+    ##   less than 1400            683            424
+    ##   more than 1400            384            508
+
+**Find MisClassification Rate**
+
+``` r
+rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
+
+rfMis
+```
+
+    ## [1] 0.4042021
+
+### Analysis
+
+This a pretty large misclassification rate. I will choose less variables
+to see if it helps.
+
+**One Variable Random Forest**
+
+``` r
+rf1 <- train(group ~ kw_avg_avg + kw_max_avg, data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))  
+```
+
+    ## note: only 1 unique complexity parameters in default grid. Truncating the grid to 1 .
+
+**Predict Data with rf1**
+
+``` r
+rf1Pred <- predict(rf1, select(dataTest, -"group"))  
+```
+
+**Compare Predictions to Actual**
+
+``` r
+fullTbl <- table(data.frame(rf1Pred, dataTest$group))  
+
+fullTbl
+```
+
+    ##                 dataTest.group
+    ## rf1Pred          less than 1400 more than 1400
+    ##   less than 1400            635            487
+    ##   more than 1400            432            445
+
+**Find MisClassification Rate**
+
+``` r
+rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
+
+rfMis
+```
+
+    ## [1] 0.4597299
