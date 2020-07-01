@@ -3,6 +3,25 @@ ST 558 Project 2
 Sarah McLaughlin
 6/22/2020
 
+  - [Introduction](#introduction)
+  - [Data](#data)
+      - [Read in data](#read-in-data)
+      - [Exploratory Data Analysis](#exploratory-data-analysis)
+      - [Filter Data to Only Include these
+        Variables](#filter-data-to-only-include-these-variables)
+      - [Create Scatterplots of these Variables Against
+        Shares](#create-scatterplots-of-these-variables-against-shares)
+      - [Select only needed variables from data for specific
+        day](#select-only-needed-variables-from-data-for-specific-day)
+      - [Make Train and Test Set](#make-train-and-test-set)
+  - [Linear Regression Model](#linear-regression-model)
+      - [Comparison of Two Models](#comparison-of-two-models)
+      - [Analysis](#analysis-4)
+      - [Comparison of all 5 Models](#comparison-of-all-5-models)
+  - [Ensemble Model](#ensemble-model)
+      - [Fix Train and Test Data](#fix-train-and-test-data)
+  - [Models Used](#models-used)
+
 # Introduction
 
 The data that will be used in this project is from the *Online News
