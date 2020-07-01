@@ -95,52 +95,99 @@ data <- data %>% select(-url)
 correlation <- cor(data, method = "spearman")
 ```
 
-Take only those with a correlation to shares of \> 0.10.
+Take only those with a correlation to shares of \> 0.06.
 
 ``` r
-shareCor <- correlation[60, ] >= 0.1
+shareCor <- correlation[60, ] >= 0.06
 
 corMax <- correlation[60, shareCor]
 
 corMax
 ```
 
-    ##     data_channel_is_socmed                 kw_min_avg 
-    ##                  0.1135715                  0.1032421 
+    ##                  num_hrefs                   num_imgs 
+    ##                 0.09001509                 0.08311430 
+    ##               num_keywords     data_channel_is_socmed 
+    ##                 0.07125251                 0.11357154 
+    ##       data_channel_is_tech                 kw_max_min 
+    ##                 0.09451945                 0.09155533 
+    ##                 kw_avg_min                 kw_min_avg 
+    ##                 0.09302653                 0.10324214 
     ##                 kw_max_avg                 kw_avg_avg 
-    ##                  0.2232914                  0.2556222 
+    ##                 0.22329145                 0.25562215 
     ##  self_reference_min_shares  self_reference_max_shares 
-    ##                  0.1815168                  0.1687247 
+    ##                 0.18151675                 0.16872472 
     ## self_reference_avg_sharess        weekday_is_saturday 
-    ##                  0.1921745                  0.1088596 
-    ##                 is_weekend        global_subjectivity 
-    ##                  0.1517175                  0.1135482 
+    ##                 0.19217450                 0.10885957 
+    ##          weekday_is_sunday                 is_weekend 
+    ##                 0.09840582                 0.15171751 
+    ##                     LDA_03        global_subjectivity 
+    ##                 0.06768825                 0.11354818 
+    ##  global_sentiment_polarity global_rate_positive_words 
+    ##                 0.07955141                 0.07129599 
     ##                     shares 
-    ##                  1.0000000
+    ##                 1.00000000
 
-Based on correlation values, these variables of note that will be used
-in our analysis and prediction:
+## Filter Data to Only Include these Variables
+
+I will not include the weekday\_is\_ variables nor the indicator
+variables.
+
+``` r
+data1 <- data %>% 
+  select(shares, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
+         kw_avg_avg, self_reference_max_shares, global_subjectivity, num_hrefs, num_imgs, num_keywords, kw_max_min, kw_avg_min, LDA_03, global_sentiment_polarity, global_rate_positive_words)%>% collect()
+```
+
+**Scale Data**
+
+``` r
+scaleData <- scale(data1)
+```
+
+## Create Scatterplots of these Variables Against Shares
+
+``` r
+dataGathered <- scaleData %>% as_data_frame() %>% 
+  gather(key = "variable", value = "value", -shares)
+```
+
+    ## Warning: `as_data_frame()` is deprecated, use `as_tibble()` (but mind the new semantics).
+    ## This warning is displayed once per session.
+
+``` r
+ggplot(dataGathered, aes(x = value, y = shares)) + geom_point() + facet_wrap(~variable)
+```
+
+![](README_files/figure-gfm/scatter%20data-1.png)<!-- -->
+
+I will take a closer look at a few of these variables.
+
+``` r
+dataGathered <- dataGathered %>% filter(variable %in% c("kw_avg_avg", "kw_avg_min", "kw_min_avg", "LDA_03", "num_imgs", "num_keywords"))
+
+ggplot(dataGathered, aes(x = value, y = shares)) + geom_point() + facet_wrap(~variable)
+```
+
+![](README_files/figure-gfm/scatter%20data%202-1.png)<!-- -->
+
+I will use these six variables in my regression. The data will be
+separated by the weekday published and the response is number of shares.
 
 1.  shares
       - (target variable)  
-2.  weekday\_is\_ variables
-      - (weekday published)  
-3.  data\_channel\_is\_socmed
-      - (social media article)  
-4.  kw\_max\_avg
-      - (average keywords for the maximum shares)  
-5.  self\_reference\_minimum\_sharess
-      - (minimum shares of referenced articles)  
-6.  is\_weekend
-      - (published on a weekend)  
-7.  kw\_min\_avg
-      - (average keywords for minimum shares)  
-8.  kw\_avg\_avg
-      - (average keywords for average shares)  
-9.  self\_reference\_max\_shares
-      - (average shares of referenced articles )
-10. global\_subjectivity
-      - (text subjectivity)
+2.  kw\_avg\_avg
+      - (average keyword in average number of shares)  
+3.  kw\_avg\_min
+      - (worst keyword in average number of shares)  
+4.  kw\_min\_avg
+      - (average keyword in minimum number of shares)  
+5.  LDA\_03
+      - (closeness to LDA topic 1)  
+6.  num\_imgs
+      - (number of images)  
+7.  num\_keywords
+      - (number of keywords in metadata)
 
 ## Select only needed variables from data for specific day
 
@@ -151,28 +198,10 @@ day <- as.name(day1)
 
 data <- data %>% 
   filter(eval(day) == 1) %>% 
-  #select only needed variables. is_weekend not included
-  select(shares, data_channel_is_socmed, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
-         kw_avg_avg, self_reference_max_shares, global_subjectivity) %>% 
+  #select only needed variables.
+  select(shares, kw_avg_avg, kw_avg_min, kw_min_avg, LDA_03, num_imgs, num_keywords) %>% 
   collect()
 ```
-
-## Create CorrPlot of all variables
-
-``` r
-corr <- cor(select(data, everything()), method = "spearman")
-
-corrplot(corr, type = "upper", tl.pos = "lt")
-corrplot(corr, type = "lower", method = "number", add = TRUE, diag = FALSE, tl.pos = "n")
-```
-
-![](README_files/figure-gfm/corrplot-1.png)<!-- -->
-
-### Analysis
-
-There is a strong correlation between kw\_avg\_avg and kw\_max\_avg, as
-well as self\_reference\_max\_shares and self\_reference\_avg\_shares. I
-may include these as interactions effects.
 
 ## Make Train and Test Set
 
@@ -195,57 +224,20 @@ dataTest <- data[test, ]
 summary(dataTrain)
 ```
 
-    ##      shares       data_channel_is_socmed   kw_max_avg    
-    ##  Min.   :    42   Min.   :0.00000        Min.   :  2019  
-    ##  1st Qu.:   904   1st Qu.:0.00000        1st Qu.:  3524  
-    ##  Median :  1300   Median :0.00000        Median :  4255  
-    ##  Mean   :  3298   Mean   :0.06109        Mean   :  5554  
-    ##  3rd Qu.:  2500   3rd Qu.:0.00000        3rd Qu.:  5991  
-    ##  Max.   :441000   Max.   :1.00000        Max.   :139600  
-    ##  self_reference_avg_sharess   kw_min_avg       kw_avg_avg     
-    ##  Min.   :     0             Min.   :  -1.0   Min.   :  713.9  
-    ##  1st Qu.:   993             1st Qu.:   0.0   1st Qu.: 2344.4  
-    ##  Median :  2300             Median : 986.6   Median : 2836.5  
-    ##  Mean   :  5952             Mean   :1103.1   Mean   : 3114.4  
-    ##  3rd Qu.:  5300             3rd Qu.:2047.4   3rd Qu.: 3555.1  
-    ##  Max.   :663600             Max.   :3609.7   Max.   :27391.6  
-    ##  self_reference_max_shares global_subjectivity
-    ##  Min.   :     0            Min.   :0.0000     
-    ##  1st Qu.:  1100            1st Qu.:0.3952     
-    ##  Median :  2900            Median :0.4517     
-    ##  Mean   :  9639            Mean   :0.4402     
-    ##  3rd Qu.:  8200            3rd Qu.:0.5051     
-    ##  Max.   :843300            Max.   :1.0000
-
-As will be used later, the median number of shares for an article is
-1400. From the summaries, you can tell which variables are indicator
-variables (those with a min of 0 and max of 1;
-i.e. `data_channel_is_socmed` and `global_subjectivity`.) This also
-shows that the data will need to be standardized when I use the ensemble
-method.
-
-Overall, the data is quite varied (especially the average variables).
-You can see that the `shares` data and `self_reference_avg_share` data
-have the same range.
-
-## Compare Fit Stats Function to compare models
-
-``` r
-compareFitStats <- function(fit1, fit2){
-  require(MuMIn)
-  fitStats <- data.frame(fitStat = c("Adj R Square", "AIC", "AICc", "BIC"), 
-              col1 = round(c(summary(fit1)$adj.r.squared, AIC(fit1), 
-                             MuMIn::AICc(fit1), BIC(fit1)), 3), 
-              col2 = round(c(summary(fit2)$adj.r.squared, AIC(fit2), 
-                             MuMIn::AICc(fit2), BIC(fit2)), 3))
-  
-  #put names on returned df  
-  calls <- as.list(match.call())
-  calls[[1]] <- NULL
-  names(fitStats[2:3])<- unlist(calls)
-  fitStats
-}
-```
+    ##      shares           kw_avg_avg      kw_avg_min        kw_min_avg    
+    ##  Min.   :     1.0   Min.   :    0   Min.   :   -1.0   Min.   :   0.0  
+    ##  1st Qu.:   922.2   1st Qu.: 2366   1st Qu.:  134.9   1st Qu.:   0.0  
+    ##  Median :  1400.0   Median : 2855   Median :  230.6   Median : 989.2  
+    ##  Mean   :  3582.0   Mean   : 3076   Mean   :  315.4   Mean   :1082.4  
+    ##  3rd Qu.:  2700.0   3rd Qu.: 3554   3rd Qu.:  352.6   3rd Qu.:1996.0  
+    ##  Max.   :690400.0   Max.   :33536   Max.   :29946.9   Max.   :3594.6  
+    ##      LDA_03           num_imgs       num_keywords   
+    ##  Min.   :0.01819   Min.   : 0.000   Min.   : 1.000  
+    ##  1st Qu.:0.02857   1st Qu.: 1.000   1st Qu.: 6.000  
+    ##  Median :0.04000   Median : 1.000   Median : 7.000  
+    ##  Mean   :0.21986   Mean   : 4.407   Mean   : 7.157  
+    ##  3rd Qu.:0.36546   3rd Qu.: 3.000   3rd Qu.: 9.000  
+    ##  Max.   :0.91997   Max.   :93.000   Max.   :10.000
 
 # Linear Regression Model
 
@@ -256,97 +248,117 @@ I will begin by running a regression model with all of the variables.
 ``` r
 allVarFit <- lm(shares ~., data = dataTrain)
 
-allVarFit
+summary(allVarFit)
 ```
 
     ## 
     ## Call:
     ## lm(formula = shares ~ ., data = dataTrain)
     ## 
+    ## Residuals:
+    ##    Min     1Q Median     3Q    Max 
+    ## -27751  -2478  -1581   -394 685407 
+    ## 
     ## Coefficients:
-    ##                (Intercept)      data_channel_is_socmed  
-    ##                 -2.342e+03                   4.075e+02  
-    ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -2.850e-01                   4.514e-02  
-    ##                 kw_min_avg                  kw_avg_avg  
-    ##                 -6.838e-01                   2.458e+00  
-    ##  self_reference_max_shares         global_subjectivity  
-    ##                 -1.771e-02                   4.506e+02
+    ##                Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  -1.045e+03  9.347e+02  -1.118    0.263    
+    ## kw_avg_avg    1.198e+00  2.279e-01   5.254 1.55e-07 ***
+    ## kw_avg_min   -4.201e-01  3.523e-01  -1.192    0.233    
+    ## kw_min_avg   -5.443e-02  2.199e-01  -0.247    0.805    
+    ## LDA_03        9.240e+02  7.813e+02   1.183    0.237    
+    ## num_imgs      1.197e+01  2.505e+01   0.478    0.633    
+    ## num_keywords  1.228e+02  1.125e+02   1.092    0.275    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 13500 on 4655 degrees of freedom
+    ## Multiple R-squared:  0.01399,    Adjusted R-squared:  0.01272 
+    ## F-statistic: 11.01 on 6 and 4655 DF,  p-value: 3.241e-12
 
-Then, I will create another linear model with the interaction effects to
-see if it makes a difference.
+### Analysis
 
-**intLM**
+The adjusted R-Squared is very small.
+
+I will create another linear model with one less variable (-LDA\_03).
+
+**OneLM**
 
 ``` r
-intLM <- lm(shares ~ data_channel_is_socmed + 
-                  kw_max_avg + kw_min_avg +
-                  self_reference_avg_sharess +
-                  kw_avg_avg +
-                  self_reference_max_shares +
-                  global_subjectivity + 
-                  kw_avg_avg:kw_max_avg + 
-                  self_reference_max_shares:self_reference_avg_sharess, 
+OneLM <- lm(shares ~ . -LDA_03,  
                 data = dataTrain
 )
 
-intLM
+summary(OneLM)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = shares ~ data_channel_is_socmed + kw_max_avg + kw_min_avg + 
-    ##     self_reference_avg_sharess + kw_avg_avg + self_reference_max_shares + 
-    ##     global_subjectivity + kw_avg_avg:kw_max_avg + self_reference_max_shares:self_reference_avg_sharess, 
-    ##     data = dataTrain)
+    ## lm(formula = shares ~ . - LDA_03, data = dataTrain)
+    ## 
+    ## Residuals:
+    ##    Min     1Q Median     3Q    Max 
+    ## -28062  -2493  -1625   -442 685382 
     ## 
     ## Coefficients:
-    ##                                          (Intercept)  
-    ##                                           -2.357e+03  
-    ##                               data_channel_is_socmed  
-    ##                                            2.757e+02  
-    ##                                           kw_max_avg  
-    ##                                           -1.549e-01  
-    ##                                           kw_min_avg  
-    ##                                           -6.333e-01  
-    ##                           self_reference_avg_sharess  
-    ##                                            7.030e-02  
-    ##                                           kw_avg_avg  
-    ##                                            2.274e+00  
-    ##                            self_reference_max_shares  
-    ##                                           -8.628e-04  
-    ##                                  global_subjectivity  
-    ##                                           -9.871e+01  
-    ##                                kw_max_avg:kw_avg_avg  
-    ##                                           -8.316e-06  
-    ## self_reference_avg_sharess:self_reference_max_shares  
-    ##                                           -1.033e-07
+    ##                Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  -1.136e+03  9.316e+02  -1.219    0.223    
+    ## kw_avg_avg    1.318e+00  2.038e-01   6.470 1.08e-10 ***
+    ## kw_avg_min   -5.191e-01  3.423e-01  -1.517    0.129    
+    ## kw_min_avg   -8.865e-02  2.180e-01  -0.407    0.684    
+    ## num_imgs      1.643e+01  2.476e+01   0.663    0.507    
+    ## num_keywords  1.187e+02  1.125e+02   1.056    0.291    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 13500 on 4656 degrees of freedom
+    ## Multiple R-squared:  0.01369,    Adjusted R-squared:  0.01263 
+    ## F-statistic: 12.93 on 5 and 4656 DF,  p-value: 1.63e-12
 
 ## Comparison of Two Models
 
 I will compare the two models using the compareFitStats function.
 
 ``` r
-compareFitStats(allVarFit, intLM)
+compareFitStats(allVarFit, OneLM)
 ```
-
-    ##        fitStat       col1       col2
-    ## 1 Adj R Square      0.026      0.029
-    ## 2          AIC 110645.441 110631.413
-    ## 3         AICc 110645.475 110631.464
-    ## 4          BIC 110704.401 110703.476
 
 ### Analysis
 
-Neither model fits the data well. I am going to try a logistic
-regression model instead.
+Neither model fits the data well. I am going to try just kw\_avg\_avg.
 
-# Logistic Model
+``` r
+kwAVGFit <- lm(shares ~ kw_avg_avg, data = dataTrain)
 
-First, I need to create a logical variable to reference whether the
-number of shares is less than 1400 or greater than 1400. I am still
-going to use the same variables as those in my linear regression
-attempt.
+summary(kwAVGFit)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = shares ~ kw_avg_avg, data = dataTrain)
+    ## 
+    ## Residuals:
+    ##    Min     1Q Median     3Q    Max 
+    ## -38895  -2525  -1712   -502 684454 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) -40.0377   506.8000  -0.079    0.937    
+    ## kw_avg_avg    1.1775     0.1517   7.762 1.02e-14 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 13500 on 4660 degrees of freedom
+    ## Multiple R-squared:  0.01276,    Adjusted R-squared:  0.01255 
+    ## F-statistic: 60.24 on 1 and 4660 DF,  p-value: 1.023e-14
+
+### Analysis
+
+None of these models fit the data. I will instead use a logistic
+model.  
+\# Logistic Model  
+First, I need to create a variable to reference whether the number of
+shares is less than 1400 or greater than 1400. I am still going to use
+the same variables as those in my linear regression attempt.
 
 ``` r
 data1 <- data %>% mutate(logShares = ifelse(shares >= 1400, 1, 0)) 
@@ -368,21 +380,20 @@ data1Test <- data1[test, ]
 data1
 ```
 
-    ## # A tibble: 7,390 x 8
-    ##    logShares data_channel_is~ kw_max_avg self_reference_~ kw_min_avg kw_avg_avg
-    ##        <dbl>            <dbl>      <dbl>            <dbl>      <dbl>      <dbl>
-    ##  1         0                0      2019.            3100           0       804.
-    ##  2         0                0      2019.               0           0       728.
-    ##  3         1                0      2318.             727           0      1185.
-    ##  4         0                0      2019.             951           0      1114.
-    ##  5         0                0      2193.            1300           0       885.
-    ##  6         0                0      2154.               0           0      1191.
-    ##  7         1                0      2103.            3151.        480      1539.
-    ##  8         1                0      4660.            2700           0      1400.
-    ##  9         0                0      5700                0           0      1803.
-    ## 10         1                0      2019.           20900           0       714.
-    ## # ... with 7,380 more rows, and 2 more variables:
-    ## #   self_reference_max_shares <dbl>, global_subjectivity <dbl>
+    ## # A tibble: 6,661 x 7
+    ##    logShares kw_avg_avg kw_avg_min kw_min_avg LDA_03 num_imgs num_keywords
+    ##        <dbl>      <dbl>      <dbl>      <dbl>  <dbl>    <dbl>        <dbl>
+    ##  1         0          0          0          0 0.0413        1            5
+    ##  2         0          0          0          0 0.0501        1            4
+    ##  3         1          0          0          0 0.0333        1            6
+    ##  4         0          0          0          0 0.0289        1            7
+    ##  5         0          0          0          0 0.0286       20            7
+    ##  6         0          0          0          0 0.0222        0            9
+    ##  7         0          0          0          0 0.0200       20           10
+    ##  8         0          0          0          0 0.0222       20            9
+    ##  9         1          0          0          0 0.0297        0            7
+    ## 10         0          0          0          0 0.0400        1            5
+    ## # ... with 6,651 more rows
 
 Here, I will fit a logistic regression model using the `glm()` function
 with the `"binomial"` family. I will look at how the removal of certain
@@ -400,194 +411,245 @@ glmALL
     ## Call:  glm(formula = logShares ~ ., family = "binomial", data = data1Train)
     ## 
     ## Coefficients:
-    ##                (Intercept)      data_channel_is_socmed  
-    ##                 -1.638e+00                   1.001e+00  
-    ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -7.657e-05                   1.538e-05  
-    ##                 kw_min_avg                  kw_avg_avg  
-    ##                 -1.573e-04                   6.383e-04  
-    ##  self_reference_max_shares         global_subjectivity  
-    ##                 -4.919e-06                   3.520e-01  
+    ##  (Intercept)    kw_avg_avg    kw_avg_min    kw_min_avg        LDA_03  
+    ##   -1.518e+00     3.425e-04    -1.066e-04     2.861e-05    -3.027e-01  
+    ##     num_imgs  num_keywords  
+    ##    8.647e-03     7.726e-02  
     ## 
-    ## Degrees of Freedom: 5172 Total (i.e. Null);  5165 Residual
-    ## Null Deviance:       7171 
-    ## Residual Deviance: 6850  AIC: 6866
-
-I will remove `kw_avg_min` variable just to be able to compare fits of
-the two logistic models.
-
-**GLM All but One Model**
+    ## Degrees of Freedom: 4661 Total (i.e. Null);  4655 Residual
+    ## Null Deviance:       6460 
+    ## Residual Deviance: 6282  AIC: 6296
 
 ``` r
-glmAllButOne <- glm(logShares ~ data_channel_is_socmed + 
-                  kw_max_avg + 
-                  self_reference_avg_sharess +
-                  kw_avg_avg +
-                  self_reference_max_shares +
-                  global_subjectivity, 
+summary(glmALL)
+```
+
+    ## 
+    ## Call:
+    ## glm(formula = logShares ~ ., family = "binomial", data = data1Train)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -3.8428  -1.1422   0.7478   1.1475   1.7476  
+    ## 
+    ## Coefficients:
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)  -1.518e+00  1.489e-01 -10.200  < 2e-16 ***
+    ## kw_avg_avg    3.425e-04  4.118e-05   8.317  < 2e-16 ***
+    ## kw_avg_min   -1.066e-04  7.802e-05  -1.367   0.1717    
+    ## kw_min_avg    2.861e-05  3.460e-05   0.827   0.4083    
+    ## LDA_03       -3.027e-01  1.223e-01  -2.475   0.0133 *  
+    ## num_imgs      8.647e-03  3.898e-03   2.218   0.0265 *  
+    ## num_keywords  7.726e-02  1.711e-02   4.517 6.28e-06 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 6460.3  on 4661  degrees of freedom
+    ## Residual deviance: 6281.9  on 4655  degrees of freedom
+    ## AIC: 6295.9
+    ## 
+    ## Number of Fisher Scoring iterations: 4
+
+I will remove `kw_avg_min` and `kw_min_avg` variable just to be able to
+compare fits of the two logistic models.
+
+**GLM2Fit Model**
+
+``` r
+glm2Fit <- glm(logShares ~ kw_avg_avg + LDA_03 + num_imgs + num_keywords,  
                 data = data1Train, 
                 family = "binomial"
 )
 
-glmAllButOne
+summary(glm2Fit)
 ```
 
     ## 
-    ## Call:  glm(formula = logShares ~ data_channel_is_socmed + kw_max_avg + 
-    ##     self_reference_avg_sharess + kw_avg_avg + self_reference_max_shares + 
-    ##     global_subjectivity, family = "binomial", data = data1Train)
+    ## Call:
+    ## glm(formula = logShares ~ kw_avg_avg + LDA_03 + num_imgs + num_keywords, 
+    ##     family = "binomial", data = data1Train)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -4.6266  -1.1395   0.7441   1.1470   1.7465  
     ## 
     ## Coefficients:
-    ##                (Intercept)      data_channel_is_socmed  
-    ##                 -1.458e+00                   9.962e-01  
-    ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -5.089e-05                   1.642e-05  
-    ##                 kw_avg_avg   self_reference_max_shares  
-    ##                  4.740e-04                  -5.281e-06  
-    ##        global_subjectivity  
-    ##                  3.809e-01  
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)  -1.484e+00  1.476e-01 -10.057  < 2e-16 ***
+    ## kw_avg_avg    3.485e-04  3.292e-05  10.586  < 2e-16 ***
+    ## LDA_03       -2.986e-01  1.191e-01  -2.507   0.0122 *  
+    ## num_imgs      8.970e-03  3.893e-03   2.304   0.0212 *  
+    ## num_keywords  6.956e-02  1.597e-02   4.356 1.32e-05 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Degrees of Freedom: 5172 Total (i.e. Null);  5166 Residual
-    ## Null Deviance:       7171 
-    ## Residual Deviance: 6871  AIC: 6885
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 6460.3  on 4661  degrees of freedom
+    ## Residual deviance: 6284.8  on 4657  degrees of freedom
+    ## AIC: 6294.8
+    ## 
+    ## Number of Fisher Scoring iterations: 4
 
 ### Analysis
 
-The AIC for the glmAllButOne model is much higher than the all variable
-model. I will remove another variable, `global_subjectivity` (next
-smallest correlation) and see if that helps.
+The AIC is about the same for both models. I will remove LDA\_03 from
+the first model.
 
-**glm All But Two Model**
+**glm3Fit Model **
 
 ``` r
-glmAllButTwo <- glm(logShares ~ data_channel_is_socmed + 
-                  kw_max_avg + 
-                  self_reference_avg_sharess +
-                  kw_avg_avg +
-                  self_reference_max_shares, 
+glm3Fit <- glm(logShares ~. -LDA_03, 
                 data = data1Train, 
                 family = "binomial"
 )
 
-glmAllButTwo
+summary(glm3Fit)
 ```
 
     ## 
-    ## Call:  glm(formula = logShares ~ data_channel_is_socmed + kw_max_avg + 
-    ##     self_reference_avg_sharess + kw_avg_avg + self_reference_max_shares, 
-    ##     family = "binomial", data = data1Train)
+    ## Call:
+    ## glm(formula = logShares ~ . - LDA_03, family = "binomial", data = data1Train)
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -3.7437  -1.1404   0.7421   1.1535   1.6500  
     ## 
     ## Coefficients:
-    ##                (Intercept)      data_channel_is_socmed  
-    ##                 -1.293e+00                   1.000e+00  
-    ##                 kw_max_avg  self_reference_avg_sharess  
-    ##                 -5.071e-05                   1.688e-05  
-    ##                 kw_avg_avg   self_reference_max_shares  
-    ##                  4.737e-04                  -5.330e-06  
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)  -1.468e+00  1.469e-01  -9.994  < 2e-16 ***
+    ## kw_avg_avg    2.929e-04  3.540e-05   8.275  < 2e-16 ***
+    ## kw_avg_min   -7.320e-05  7.666e-05  -0.955   0.3396    
+    ## kw_min_avg    4.464e-05  3.389e-05   1.317   0.1877    
+    ## num_imgs      7.294e-03  3.852e-03   1.894   0.0583 .  
+    ## num_keywords  7.907e-02  1.708e-02   4.630 3.66e-06 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Degrees of Freedom: 5172 Total (i.e. Null);  5167 Residual
-    ## Null Deviance:       7171 
-    ## Residual Deviance: 6873  AIC: 6885
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 6460.3  on 4661  degrees of freedom
+    ## Residual deviance: 6288.1  on 4656  degrees of freedom
+    ## AIC: 6300.1
+    ## 
+    ## Number of Fisher Scoring iterations: 4
 
 \#\#Analysis  
-Remove `data_channel_is_socmed`.
+AIC is slightly higher. I will now remove kw\_avg\_min this time.
 
-**glm All But Three Model**
+**glm4Fit Model **
 
 ``` r
-glmAllButThree <- glm(logShares ~ 
-                  kw_max_avg + 
-                  self_reference_avg_sharess +
-                  kw_avg_avg +
-                  self_reference_max_shares,
+glm4Fit <- glm(logShares ~. -LDA_03 -kw_avg_min, 
                 data = data1Train, 
                 family = "binomial"
 )
 
-glmAllButThree
+summary(glm4Fit)
 ```
 
     ## 
-    ## Call:  glm(formula = logShares ~ kw_max_avg + self_reference_avg_sharess + 
-    ##     kw_avg_avg + self_reference_max_shares, family = "binomial", 
+    ## Call:
+    ## glm(formula = logShares ~ . - LDA_03 - kw_avg_min, family = "binomial", 
     ##     data = data1Train)
     ## 
-    ## Coefficients:
-    ##                (Intercept)                  kw_max_avg  
-    ##                 -1.255e+00                  -5.463e-05  
-    ## self_reference_avg_sharess                  kw_avg_avg  
-    ##                  1.605e-05                   4.858e-04  
-    ##  self_reference_max_shares  
-    ##                 -4.450e-06  
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -4.2169  -1.1395   0.7466   1.1531   1.6485  
     ## 
-    ## Degrees of Freedom: 5172 Total (i.e. Null);  5168 Residual
-    ## Null Deviance:       7171 
-    ## Residual Deviance: 6937  AIC: 6947
+    ## Coefficients:
+    ##                Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)  -1.459e+00  1.466e-01  -9.952  < 2e-16 ***
+    ## kw_avg_avg    2.836e-04  3.401e-05   8.340  < 2e-16 ***
+    ## kw_min_avg    4.900e-05  3.358e-05   1.459   0.1444    
+    ## num_imgs      7.444e-03  3.849e-03   1.934   0.0531 .  
+    ## num_keywords  7.803e-02  1.705e-02   4.577 4.72e-06 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 6460.3  on 4661  degrees of freedom
+    ## Residual deviance: 6289.0  on 4657  degrees of freedom
+    ## AIC: 6299
+    ## 
+    ## Number of Fisher Scoring iterations: 4
 
 \#\#Analysis  
-Remove `self_reference_max_shares`.
+Did not help. For my last model, I will just use num\_keywords.
 
-**glm All But Four Model**
+**glm5Fit**
 
 ``` r
-glmAllButFour <- glm(logShares ~ 
-                  kw_max_avg + 
-                  self_reference_avg_sharess +
-                  kw_avg_avg, 
+glm5Fit <- glm(logShares ~ num_keywords, 
                 data = data1Train, 
                 family = "binomial"
 )
-glmAllButFour
+summary(glm5Fit)
 ```
 
     ## 
-    ## Call:  glm(formula = logShares ~ kw_max_avg + self_reference_avg_sharess + 
-    ##     kw_avg_avg, family = "binomial", data = data1Train)
+    ## Call:
+    ## glm(formula = logShares ~ num_keywords, family = "binomial", 
+    ##     data = data1Train)
+    ## 
+    ## Deviance Residuals: 
+    ##    Min      1Q  Median      3Q     Max  
+    ## -1.293  -1.192   1.066   1.162   1.330  
     ## 
     ## Coefficients:
-    ##                (Intercept)                  kw_max_avg  
-    ##                 -1.252e+00                  -5.453e-05  
-    ## self_reference_avg_sharess                  kw_avg_avg  
-    ##                  8.433e-06                   4.856e-04  
+    ##              Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)  -0.50811    0.11578  -4.388 1.14e-05 ***
+    ## num_keywords  0.07762    0.01566   4.956 7.18e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Degrees of Freedom: 5172 Total (i.e. Null);  5169 Residual
-    ## Null Deviance:       7171 
-    ## Residual Deviance: 6941  AIC: 6949
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 6460.3  on 4661  degrees of freedom
+    ## Residual deviance: 6435.6  on 4660  degrees of freedom
+    ## AIC: 6439.6
+    ## 
+    ## Number of Fisher Scoring iterations: 3
 
 ## Analysis
 
-Did not help. Will keep `self_reference_max_shares`.
+This produced the best model thus far.
 
-## Comparison of all Four Logistic Models
+## Comparison of all 5 Models
 
 I will predict the test data and compare the RMSEs of those.
 
 ``` r
 #Make predictions  
 predALL <- predict(glmALL, newdata = data1Test, type = "link")
-predALLbutOne <- predict(glmAllButOne, newdata = data1Test, type = "link")
-predALLbutTwo <- predict(glmAllButTwo, newdata = data1Test, type = "link")
-predALLbutThree <- predict(glmAllButThree, newdata = data1Test, type = "link")
+pred2 <- predict(glm2Fit, newdata = data1Test, type = "link")
+pred3 <- predict(glm3Fit, newdata = data1Test, type = "link")
+pred4 <- predict(glm4Fit, newdata = data1Test, type = "link")
+pred5 <- predict(glm5Fit, newdata = data1Test, type = "link")
 
 #Calculate RMSE  
 AllMSE <- rmse(data1Test$logShares, predALL)
-OneMSE <- rmse(data1Test$logShares, predALLbutOne)
-TwoMSE <- rmse(data1Test$logShares, predALLbutTwo)
-ThreeMSE <- rmse(data1Test$logShares, predALLbutThree)
+TwoMSE <- rmse(data1Test$logShares, pred2)
+ThreeMSE <- rmse(data1Test$logShares, pred3)
+FourMSE <- rmse(data1Test$logShares, pred4)
+FiveMSE <- rmse(data1Test$logShares, pred5)
 
-matMSE <- matrix(c(AllMSE, OneMSE, TwoMSE, ThreeMSE), nrow = 1, ncol = 4, byrow = TRUE)
+
+matMSE <- matrix(c(AllMSE, TwoMSE, ThreeMSE, FourMSE, FiveMSE), nrow = 1, ncol = 5, byrow = TRUE)
 
 matMSE
 ```
 
-    ##           [,1]      [,2]      [,3]      [,4]
-    ## [1,] 0.8399529 0.8395468 0.8429256 0.8239479
+    ##           [,1]      [,2]      [,3]      [,4]      [,5]
+    ## [1,] 0.7763334 0.8102003 0.7680279 0.7835722 0.6876201
 
 ### Analysis
 
-The glmAllButThree produces the smallest MSE. I will use this as my
-model for the data. The glmAllButThree also produces the highest AIC
-value.
+The glm5Fit produces the smallest MSE. I will use this as my model for
+the data. The glm5Fit also produces the highest AIC value.
 
 # Ensemble Model
 
@@ -602,35 +664,31 @@ test data.
 
 ``` r
 dataTrain <- dataTrain %>% mutate(group = ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
-  select(group, kw_max_avg, self_reference_avg_sharess, 
-         kw_min_avg, kw_avg_avg, self_reference_max_shares, 
-         global_subjectivity) %>% collect()
+  select(group, everything()) %>% collect()
 
 dataTrain$group <- as.factor(dataTrain$group)
 
 dataTrain
 ```
 
-    ## # A tibble: 5,173 x 7
-    ##    group kw_max_avg self_reference_~ kw_min_avg kw_avg_avg self_reference_~
-    ##    <fct>      <dbl>            <dbl>      <dbl>      <dbl>            <dbl>
-    ##  1 more~      4650             1833.         0       2737.             3300
-    ##  2 less~      3430.            1800       1005.      2582.             2400
-    ##  3 less~      5386.               0          0       2923.                0
-    ##  4 less~      7240.            2531       3524.      5502.             4100
-    ##  5 more~      4000             6646.      1533.      3227.            53100
-    ##  6 less~      4124.            1900          0       2696.             2100
-    ##  7 less~      3954.            3400       2879.      3421.             5200
-    ##  8 less~      3272.            6788.         0       1919.            23100
-    ##  9 less~      4346.             876.      1295.      2857.              995
-    ## 10 more~      7787.            3800       3484.      5258.             4100
-    ## # ... with 5,163 more rows, and 1 more variable: global_subjectivity <dbl>
+    ## # A tibble: 4,662 x 8
+    ##    group    shares kw_avg_avg kw_avg_min kw_min_avg LDA_03 num_imgs num_keywords
+    ##    <fct>     <dbl>      <dbl>      <dbl>      <dbl>  <dbl>    <dbl>        <dbl>
+    ##  1 more th~   2900      4102.      323.       1818. 0.113         2           10
+    ##  2 less th~   1100      2659.      158.       1809. 0.0333        1            6
+    ##  3 less th~   1300      3529.      494.       1100  0.0289       14            7
+    ##  4 more th~   6800      3953.     1170        2969. 0.0250        6            8
+    ##  5 less th~    711      2229.      105.       1051. 0.0200        0           10
+    ##  6 less th~   1100      1933.      341.          0  0.0203        6           10
+    ##  7 less th~    713      3487.      216.       1783. 0.0400        1            5
+    ##  8 less th~    725      2879.       50.8      2623. 0.0400        1            5
+    ##  9 more th~   7800      5375.      108.       3510. 0.800        75            4
+    ## 10 less th~   1200      2824.       69.5         0  0.521         4            9
+    ## # ... with 4,652 more rows
 
 ``` r
 dataTest <- dataTest %>% mutate(group =ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
-  select(group, kw_max_avg, self_reference_avg_sharess, 
-         kw_min_avg, kw_avg_avg, self_reference_max_shares, 
-         global_subjectivity) %>% collect()
+  select(group, everything()) %>% collect()
 
 dataTest$group <- as.factor(dataTest$group)
 ```
@@ -648,7 +706,13 @@ rfFit<- train(group~., data = dataTrain, method = "rf", trControl = trctrl, preP
 
 ``` r
 rfPred <- predict(rfFit, select(dataTest, -"group"))
+
+head(rfPred)
 ```
+
+    ## [1] less than 1400 more than 1400 more than 1400 less than 1400 less than 1400
+    ## [6] less than 1400
+    ## Levels: less than 1400 more than 1400
 
 **Compare Predictions to Actual**
 
@@ -660,8 +724,8 @@ fullTbl
 
     ##                 dataTest.group
     ## rfPred           less than 1400 more than 1400
-    ##   less than 1400            812            514
-    ##   more than 1400            398            493
+    ##   less than 1400           1067              0
+    ##   more than 1400              0            932
 
 **Find MisClassification Rate**
 
@@ -671,40 +735,36 @@ rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
 rfMis
 ```
 
-    ## [1] 0.4113667
+    ## [1] 0
 
 ### Analysis
 
-This a pretty large misclassification rate. I will choose less variables
-to see if it helps.
+This misclassification rate is suspiciously low.
 
-**One Variable Random Forest**
+**Another Random Forest**
 
 ``` r
-# no kw_min_avg, has lowest correlation 
-rf1 <- train(group ~ kw_max_avg + self_reference_avg_sharess +  
-         + kw_avg_avg + self_reference_max_shares +  
-         global_subjectivity, data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))  
+rf2 <- train(group ~ num_keywords + kw_avg_avg + kw_min_avg + num_imgs, data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))  
 ```
 
-**Predict Data with rf1**
+**Predict Data with rf2**
 
 ``` r
-rf1Pred <- predict(rf1, select(dataTest, -"group"))  
+rf2Pred <- predict(rf2, select(dataTest, -"group"))  
 ```
 
 **Compare Predictions to Actual**
 
 ``` r
-fullTbl <- table(data.frame(rf1Pred, dataTest$group))  
+fullTbl <- table(data.frame(rf2Pred, dataTest$group))  
 
 fullTbl
 ```
 
     ##                 dataTest.group
-    ## rf1Pred          less than 1400 more than 1400
-    ##   less than 1400            812            526
-    ##   more than 1400            398            481
+    ## rf2Pred          less than 1400 more than 1400
+    ##   less than 1400            715            465
+    ##   more than 1400            352            467
 
 **Find MisClassification Rate**
 
@@ -714,7 +774,7 @@ rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
 rfMis
 ```
 
-    ## [1] 0.4167794
+    ## [1] 0.4087044
 
 ### Analysis
 
@@ -725,5 +785,5 @@ prediction.
 
 Overall, I have chosen the following models for my data.
 
-1.  glmAllbutThree: Logistic Regression Model  
+1.  glm5Fit: Logistic Regression Model  
 2.  rfFit : Random Forest Model
