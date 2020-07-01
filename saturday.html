@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style type="text/css">
+@font-face {
+font-family: octicons-link;
+src: url(data:font/woff;charset=utf-8;base64,d09GRgABAAAAAAZwABAAAAAACFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEU0lHAAAGaAAAAAgAAAAIAAAAAUdTVUIAAAZcAAAACgAAAAoAAQAAT1MvMgAAAyQAAABJAAAAYFYEU3RjbWFwAAADcAAAAEUAAACAAJThvmN2dCAAAATkAAAABAAAAAQAAAAAZnBnbQAAA7gAAACyAAABCUM+8IhnYXNwAAAGTAAAABAAAAAQABoAI2dseWYAAAFsAAABPAAAAZwcEq9taGVhZAAAAsgAAAA0AAAANgh4a91oaGVhAAADCAAAABoAAAAkCA8DRGhtdHgAAAL8AAAADAAAAAwGAACfbG9jYQAAAsAAAAAIAAAACABiATBtYXhwAAACqAAAABgAAAAgAA8ASm5hbWUAAAToAAABQgAAAlXu73sOcG9zdAAABiwAAAAeAAAAME3QpOBwcmVwAAAEbAAAAHYAAAB/aFGpk3jaTY6xa8JAGMW/O62BDi0tJLYQincXEypYIiGJjSgHniQ6umTsUEyLm5BV6NDBP8Tpts6F0v+k/0an2i+itHDw3v2+9+DBKTzsJNnWJNTgHEy4BgG3EMI9DCEDOGEXzDADU5hBKMIgNPZqoD3SilVaXZCER3/I7AtxEJLtzzuZfI+VVkprxTlXShWKb3TBecG11rwoNlmmn1P2WYcJczl32etSpKnziC7lQyWe1smVPy/Lt7Kc+0vWY/gAgIIEqAN9we0pwKXreiMasxvabDQMM4riO+qxM2ogwDGOZTXxwxDiycQIcoYFBLj5K3EIaSctAq2kTYiw+ymhce7vwM9jSqO8JyVd5RH9gyTt2+J/yUmYlIR0s04n6+7Vm1ozezUeLEaUjhaDSuXHwVRgvLJn1tQ7xiuVv/ocTRF42mNgZGBgYGbwZOBiAAFGJBIMAAizAFoAAABiAGIAznjaY2BkYGAA4in8zwXi+W2+MjCzMIDApSwvXzC97Z4Ig8N/BxYGZgcgl52BCSQKAA3jCV8CAABfAAAAAAQAAEB42mNgZGBg4f3vACQZQABIMjKgAmYAKEgBXgAAeNpjYGY6wTiBgZWBg2kmUxoDA4MPhGZMYzBi1AHygVLYQUCaawqDA4PChxhmh/8ODDEsvAwHgMKMIDnGL0x7gJQCAwMAJd4MFwAAAHjaY2BgYGaA4DAGRgYQkAHyGMF8NgYrIM3JIAGVYYDT+AEjAwuDFpBmA9KMDEwMCh9i/v8H8sH0/4dQc1iAmAkALaUKLgAAAHjaTY9LDsIgEIbtgqHUPpDi3gPoBVyRTmTddOmqTXThEXqrob2gQ1FjwpDvfwCBdmdXC5AVKFu3e5MfNFJ29KTQT48Ob9/lqYwOGZxeUelN2U2R6+cArgtCJpauW7UQBqnFkUsjAY/kOU1cP+DAgvxwn1chZDwUbd6CFimGXwzwF6tPbFIcjEl+vvmM/byA48e6tWrKArm4ZJlCbdsrxksL1AwWn/yBSJKpYbq8AXaaTb8AAHja28jAwOC00ZrBeQNDQOWO//sdBBgYGRiYWYAEELEwMTE4uzo5Zzo5b2BxdnFOcALxNjA6b2ByTswC8jYwg0VlNuoCTWAMqNzMzsoK1rEhNqByEyerg5PMJlYuVueETKcd/89uBpnpvIEVomeHLoMsAAe1Id4AAAAAAAB42oWQT07CQBTGv0JBhagk7HQzKxca2sJCE1hDt4QF+9JOS0nbaaYDCQfwCJ7Au3AHj+LO13FMmm6cl7785vven0kBjHCBhfpYuNa5Ph1c0e2Xu3jEvWG7UdPDLZ4N92nOm+EBXuAbHmIMSRMs+4aUEd4Nd3CHD8NdvOLTsA2GL8M9PODbcL+hD7C1xoaHeLJSEao0FEW14ckxC+TU8TxvsY6X0eLPmRhry2WVioLpkrbp84LLQPGI7c6sOiUzpWIWS5GzlSgUzzLBSikOPFTOXqly7rqx0Z1Q5BAIoZBSFihQYQOOBEdkCOgXTOHA07HAGjGWiIjaPZNW13/+lm6S9FT7rLHFJ6fQbkATOG1j2OFMucKJJsxIVfQORl+9Jyda6Sl1dUYhSCm1dyClfoeDve4qMYdLEbfqHf3O/AdDumsjAAB42mNgYoAAZQYjBmyAGYQZmdhL8zLdDEydARfoAqIAAAABAAMABwAKABMAB///AA8AAQAAAAAAAAAAAAAAAAABAAAAAA==) format('woff');
+}
+body {
+-webkit-text-size-adjust: 100%;
+text-size-adjust: 100%;
+color: #333;
+font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 16px;
+line-height: 1.6;
+word-wrap: break-word;
+}
+a {
+background-color: transparent;
+}
+a:active,
+a:hover {
+outline: 0;
+}
+strong {
+font-weight: bold;
+}
+h1 {
+font-size: 2em;
+margin: 0.67em 0;
+}
+img {
+border: 0;
+}
+hr {
+box-sizing: content-box;
+height: 0;
+}
+pre {
+overflow: auto;
+}
+code,
+kbd,
+pre {
+font-family: monospace, monospace;
+font-size: 1em;
+}
+input {
+color: inherit;
+font: inherit;
+margin: 0;
+}
+html input[disabled] {
+cursor: default;
+}
+input {
+line-height: normal;
+}
+input[type="checkbox"] {
+box-sizing: border-box;
+padding: 0;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+td,
+th {
+padding: 0;
+}
+* {
+box-sizing: border-box;
+}
+input {
+font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+a {
+color: #4078c0;
+text-decoration: none;
+}
+a:hover,
+a:active {
+text-decoration: underline;
+}
+hr {
+height: 0;
+margin: 15px 0;
+overflow: hidden;
+background: transparent;
+border: 0;
+border-bottom: 1px solid #ddd;
+}
+hr:before {
+display: table;
+content: "";
+}
+hr:after {
+display: table;
+clear: both;
+content: "";
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 15px;
+margin-bottom: 15px;
+line-height: 1.1;
+}
+h1 {
+font-size: 30px;
+}
+h2 {
+font-size: 21px;
+}
+h3 {
+font-size: 16px;
+}
+h4 {
+font-size: 14px;
+}
+h5 {
+font-size: 12px;
+}
+h6 {
+font-size: 11px;
+}
+blockquote {
+margin: 0;
+}
+ul,
+ol {
+padding: 0;
+margin-top: 0;
+margin-bottom: 0;
+}
+ol ol,
+ul ol {
+list-style-type: lower-roman;
+}
+ul ul ol,
+ul ol ol,
+ol ul ol,
+ol ol ol {
+list-style-type: lower-alpha;
+}
+dd {
+margin-left: 0;
+}
+code {
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+font-size: 12px;
+}
+pre {
+margin-top: 0;
+margin-bottom: 0;
+font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.select::-ms-expand {
+opacity: 0;
+}
+.octicon {
+font: normal normal normal 16px/1 octicons-link;
+display: inline-block;
+text-decoration: none;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+.octicon-link:before {
+content: '\f05c';
+}
+.markdown-body:before {
+display: table;
+content: "";
+}
+.markdown-body:after {
+display: table;
+clear: both;
+content: "";
+}
+.markdown-body>*:first-child {
+margin-top: 0 !important;
+}
+.markdown-body>*:last-child {
+margin-bottom: 0 !important;
+}
+a:not([href]) {
+color: inherit;
+text-decoration: none;
+}
+.anchor {
+display: inline-block;
+padding-right: 2px;
+margin-left: -18px;
+}
+.anchor:focus {
+outline: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 1em;
+margin-bottom: 16px;
+font-weight: bold;
+line-height: 1.4;
+}
+h1 .octicon-link,
+h2 .octicon-link,
+h3 .octicon-link,
+h4 .octicon-link,
+h5 .octicon-link,
+h6 .octicon-link {
+color: #000;
+vertical-align: middle;
+visibility: hidden;
+}
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+text-decoration: none;
+}
+h1:hover .anchor .octicon-link,
+h2:hover .anchor .octicon-link,
+h3:hover .anchor .octicon-link,
+h4:hover .anchor .octicon-link,
+h5:hover .anchor .octicon-link,
+h6:hover .anchor .octicon-link {
+visibility: visible;
+}
+h1 {
+padding-bottom: 0.3em;
+font-size: 2.25em;
+line-height: 1.2;
+border-bottom: 1px solid #eee;
+}
+h1 .anchor {
+line-height: 1;
+}
+h2 {
+padding-bottom: 0.3em;
+font-size: 1.75em;
+line-height: 1.225;
+border-bottom: 1px solid #eee;
+}
+h2 .anchor {
+line-height: 1;
+}
+h3 {
+font-size: 1.5em;
+line-height: 1.43;
+}
+h3 .anchor {
+line-height: 1.2;
+}
+h4 {
+font-size: 1.25em;
+}
+h4 .anchor {
+line-height: 1.2;
+}
+h5 {
+font-size: 1em;
+}
+h5 .anchor {
+line-height: 1.1;
+}
+h6 {
+font-size: 1em;
+color: #777;
+}
+h6 .anchor {
+line-height: 1.1;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table,
+pre {
+margin-top: 0;
+margin-bottom: 16px;
+}
+hr {
+height: 4px;
+padding: 0;
+margin: 16px 0;
+background-color: #e7e7e7;
+border: 0 none;
+}
+ul,
+ol {
+padding-left: 2em;
+}
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+margin-top: 0;
+margin-bottom: 0;
+}
+li>p {
+margin-top: 16px;
+}
+dl {
+padding: 0;
+}
+dl dt {
+padding: 0;
+margin-top: 16px;
+font-size: 1em;
+font-style: italic;
+font-weight: bold;
+}
+dl dd {
+padding: 0 16px;
+margin-bottom: 16px;
+}
+blockquote {
+padding: 0 15px;
+color: #777;
+border-left: 4px solid #ddd;
+}
+blockquote>:first-child {
+margin-top: 0;
+}
+blockquote>:last-child {
+margin-bottom: 0;
+}
+table {
+display: block;
+width: 100%;
+overflow: auto;
+word-break: normal;
+word-break: keep-all;
+}
+table th {
+font-weight: bold;
+}
+table th,
+table td {
+padding: 6px 13px;
+border: 1px solid #ddd;
+}
+table tr {
+background-color: #fff;
+border-top: 1px solid #ccc;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+img {
+max-width: 100%;
+box-sizing: content-box;
+background-color: #fff;
+}
+code {
+padding: 0;
+padding-top: 0.2em;
+padding-bottom: 0.2em;
+margin: 0;
+font-size: 85%;
+background-color: rgba(0,0,0,0.04);
+border-radius: 3px;
+}
+code:before,
+code:after {
+letter-spacing: -0.2em;
+content: "\00a0";
+}
+pre>code {
+padding: 0;
+margin: 0;
+font-size: 100%;
+word-break: normal;
+white-space: pre;
+background: transparent;
+border: 0;
+}
+.highlight {
+margin-bottom: 16px;
+}
+.highlight pre,
+pre {
+padding: 16px;
+overflow: auto;
+font-size: 85%;
+line-height: 1.45;
+background-color: #f7f7f7;
+border-radius: 3px;
+}
+.highlight pre {
+margin-bottom: 0;
+word-break: normal;
+}
+pre {
+word-wrap: normal;
+}
+pre code {
+display: inline;
+max-width: initial;
+padding: 0;
+margin: 0;
+overflow: initial;
+line-height: inherit;
+word-wrap: normal;
+background-color: transparent;
+border: 0;
+}
+pre code:before,
+pre code:after {
+content: normal;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font-size: 11px;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.pl-c {
+color: #969896;
+}
+.pl-c1,
+.pl-s .pl-v {
+color: #0086b3;
+}
+.pl-e,
+.pl-en {
+color: #795da3;
+}
+.pl-s .pl-s1,
+.pl-smi {
+color: #333;
+}
+.pl-ent {
+color: #63a35c;
+}
+.pl-k {
+color: #a71d5d;
+}
+.pl-pds,
+.pl-s,
+.pl-s .pl-pse .pl-s1,
+.pl-sr,
+.pl-sr .pl-cce,
+.pl-sr .pl-sra,
+.pl-sr .pl-sre {
+color: #183691;
+}
+.pl-v {
+color: #ed6a43;
+}
+.pl-id {
+color: #b52a1d;
+}
+.pl-ii {
+background-color: #b52a1d;
+color: #f8f8f8;
+}
+.pl-sr .pl-cce {
+color: #63a35c;
+font-weight: bold;
+}
+.pl-ml {
+color: #693a17;
+}
+.pl-mh,
+.pl-mh .pl-en,
+.pl-ms {
+color: #1d3e81;
+font-weight: bold;
+}
+.pl-mq {
+color: #008080;
+}
+.pl-mi {
+color: #333;
+font-style: italic;
+}
+.pl-mb {
+color: #333;
+font-weight: bold;
+}
+.pl-md {
+background-color: #ffecec;
+color: #bd2c00;
+}
+.pl-mi1 {
+background-color: #eaffea;
+color: #55a532;
+}
+.pl-mdr {
+color: #795da3;
+font-weight: bold;
+}
+.pl-mo {
+color: #1d3e81;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.task-list-item {
+list-style-type: none;
+}
+.task-list-item+.task-list-item {
+margin-top: 3px;
+}
+.task-list-item input {
+margin: 0 0.35em 0.25em -1.6em;
+vertical-align: middle;
+}
+:checked+.radio-label {
+z-index: 1;
+position: relative;
+border-color: #4078c0;
+}
+.sourceLine {
+display: inline-block;
+}
+code .kw { color: #000000; }
+code .dt { color: #ed6a43; }
+code .dv { color: #009999; }
+code .bn { color: #009999; }
+code .fl { color: #009999; }
+code .ch { color: #009999; }
+code .st { color: #183691; }
+code .co { color: #969896; }
+code .ot { color: #0086b3; }
+code .al { color: #a61717; }
+code .fu { color: #63a35c; }
+code .er { color: #a61717; background-color: #e3d2d2; }
+code .wa { color: #000000; }
+code .cn { color: #008080; }
+code .sc { color: #008080; }
+code .vs { color: #183691; }
+code .ss { color: #183691; }
+code .im { color: #000000; }
+code .va {color: #008080; }
+code .cf { color: #000000; }
+code .op { color: #000000; }
+code .bu { color: #000000; }
+code .ex { color: #000000; }
+code .pp { color: #999999; }
+code .at { color: #008080; }
+code .do { color: #969896; }
+code .an { color: #008080; }
+code .cv { color: #008080; }
+code .in { color: #008080; }
+</style>
+<style>
+body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+  padding-top: 0px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 id="st-558-project-2">ST 558 Project 2</h1>
+<p>Sarah McLaughlin 6/22/2020</p>
+<h1 id="introduction">Introduction</h1>
+<p>The data that will be used in this project is from the <em>Online News Popularity Data Set</em> from the <em>UCI Machine Learning Repository</em>. The goal of this project is to create two models (one a linear model, the other an ensemble model) that will be used to predict the number of shares/the probability/if an article has more than 1400 shares. How I picked which variables is detailed below.</p>
+<p>The data is from Mashable (<a href="http://www.mashable.com">www.mashable.com</a>) and contains the statistics for articles that were written and published on their website. There are statistics for 39,645 articles.</p>
+<p>In this project, I will attempt to create a linear regression model for the data, comparing the Adjusted R Squared values of the models. Due to the very low Adjusted R Squared models, I will instead move to a logistic model. These models produce very small RMSEs.</p>
+<p>I will also fit a Random Forest Classification model to the data. I have attempted a few different Random Forest Models but due to computing speed, have only included two models.</p>
+<h1 id="data">Data</h1>
+<p>Here, I will bring in the data that will be used in this project. With the data, we are trying to predict the number of shares a particular article will receive.</p>
+<h2 id="read-in-data">Read in data</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>data &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;OnlineNewsPopularity.csv&quot;</span>)</span></code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   url = col_character()
+## )
+
+## See spec(...) for full column specifications.
+</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#Look at column names  </span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">attributes</span>(data)<span class="op">$</span>names</span></code></pre></div>
+<pre><code>##  [1] &quot;url&quot;                          
+##  [2] &quot;timedelta&quot;                    
+##  [3] &quot;n_tokens_title&quot;               
+##  [4] &quot;n_tokens_content&quot;             
+##  [5] &quot;n_unique_tokens&quot;              
+##  [6] &quot;n_non_stop_words&quot;             
+##  [7] &quot;n_non_stop_unique_tokens&quot;     
+##  [8] &quot;num_hrefs&quot;                    
+##  [9] &quot;num_self_hrefs&quot;               
+## [10] &quot;num_imgs&quot;                     
+## [11] &quot;num_videos&quot;                   
+## [12] &quot;average_token_length&quot;         
+## [13] &quot;num_keywords&quot;                 
+## [14] &quot;data_channel_is_lifestyle&quot;    
+## [15] &quot;data_channel_is_entertainment&quot;
+## [16] &quot;data_channel_is_bus&quot;          
+## [17] &quot;data_channel_is_socmed&quot;       
+## [18] &quot;data_channel_is_tech&quot;         
+## [19] &quot;data_channel_is_world&quot;        
+## [20] &quot;kw_min_min&quot;                   
+## [21] &quot;kw_max_min&quot;                   
+## [22] &quot;kw_avg_min&quot;                   
+## [23] &quot;kw_min_max&quot;                   
+## [24] &quot;kw_max_max&quot;                   
+## [25] &quot;kw_avg_max&quot;                   
+## [26] &quot;kw_min_avg&quot;                   
+## [27] &quot;kw_max_avg&quot;                   
+## [28] &quot;kw_avg_avg&quot;                   
+## [29] &quot;self_reference_min_shares&quot;    
+## [30] &quot;self_reference_max_shares&quot;    
+## [31] &quot;self_reference_avg_sharess&quot;   
+## [32] &quot;weekday_is_monday&quot;            
+## [33] &quot;weekday_is_tuesday&quot;           
+## [34] &quot;weekday_is_wednesday&quot;         
+## [35] &quot;weekday_is_thursday&quot;          
+## [36] &quot;weekday_is_friday&quot;            
+## [37] &quot;weekday_is_saturday&quot;          
+## [38] &quot;weekday_is_sunday&quot;            
+## [39] &quot;is_weekend&quot;                   
+## [40] &quot;LDA_00&quot;                       
+## [41] &quot;LDA_01&quot;                       
+## [42] &quot;LDA_02&quot;                       
+## [43] &quot;LDA_03&quot;                       
+## [44] &quot;LDA_04&quot;                       
+## [45] &quot;global_subjectivity&quot;          
+## [46] &quot;global_sentiment_polarity&quot;    
+## [47] &quot;global_rate_positive_words&quot;   
+## [48] &quot;global_rate_negative_words&quot;   
+## [49] &quot;rate_positive_words&quot;          
+## [50] &quot;rate_negative_words&quot;          
+## [51] &quot;avg_positive_polarity&quot;        
+## [52] &quot;min_positive_polarity&quot;        
+## [53] &quot;max_positive_polarity&quot;        
+## [54] &quot;avg_negative_polarity&quot;        
+## [55] &quot;min_negative_polarity&quot;        
+## [56] &quot;max_negative_polarity&quot;        
+## [57] &quot;title_subjectivity&quot;           
+## [58] &quot;title_sentiment_polarity&quot;     
+## [59] &quot;abs_title_subjectivity&quot;       
+## [60] &quot;abs_title_sentiment_polarity&quot; 
+## [61] &quot;shares&quot;
+</code></pre>
+<h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>Here, I will do a basic analysis of my variables to see basic trends, and correlations.</p>
+<p><em>Correlation of all Variables</em></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>url)</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a>correlation &lt;-<span class="st"> </span><span class="kw">cor</span>(data, <span class="dt">method =</span> <span class="st">&quot;spearman&quot;</span>)</span></code></pre></div>
+<p>Take only those with a correlation to shares of &gt; 0.10.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>shareCor &lt;-<span class="st"> </span>correlation[<span class="dv">60</span>, ] <span class="op">&gt;=</span><span class="st"> </span><span class="fl">0.1</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>corMax &lt;-<span class="st"> </span>correlation[<span class="dv">60</span>, shareCor]</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a>corMax</span></code></pre></div>
+<pre><code>##     data_channel_is_socmed                 kw_min_avg 
+##                  0.1135715                  0.1032421 
+##                 kw_max_avg                 kw_avg_avg 
+##                  0.2232914                  0.2556222 
+##  self_reference_min_shares  self_reference_max_shares 
+##                  0.1815168                  0.1687247 
+## self_reference_avg_sharess        weekday_is_saturday 
+##                  0.1921745                  0.1088596 
+##                 is_weekend        global_subjectivity 
+##                  0.1517175                  0.1135482 
+##                     shares 
+##                  1.0000000
+</code></pre>
+<p>Based on correlation values, these variables of note that will be used in our analysis and prediction:</p>
+<ol>
+<li>shares
+<ul>
+<li>(target variable)</li>
+</ul></li>
+<li>weekday_is_ variables
+<ul>
+<li>(weekday published)</li>
+</ul></li>
+<li>data_channel_is_socmed
+<ul>
+<li>(social media article)</li>
+</ul></li>
+<li>kw_max_avg
+<ul>
+<li>(average keywords for the maximum shares)</li>
+</ul></li>
+<li>self_reference_minimum_sharess
+<ul>
+<li>(minimum shares of referenced articles)</li>
+</ul></li>
+<li>is_weekend
+<ul>
+<li>(published on a weekend)</li>
+</ul></li>
+<li>kw_min_avg
+<ul>
+<li>(average keywords for minimum shares)</li>
+</ul></li>
+<li>kw_avg_avg
+<ul>
+<li>(average keywords for average shares)</li>
+</ul></li>
+<li>self_reference_max_shares
+<ul>
+<li>(average shares of referenced articles )</li>
+</ul></li>
+<li>global_subjectivity
+<ul>
+<li>(text subjectivity)</li>
+</ul></li>
+</ol>
+<h2 id="select-only-needed-variables-from-data-for-specific-day">Select only needed variables from data for specific day</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>day1 &lt;-<span class="kw">paste0</span>(<span class="st">&quot;weekday_is_&quot;</span>, params<span class="op">$</span>day)</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a>day &lt;-<span class="st"> </span><span class="kw">as.name</span>(day1)</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a>data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">eval</span>(day) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="st">  </span><span class="co">#select only needed variables. is_weekend not included</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="st">  </span><span class="kw">select</span>(shares, data_channel_is_socmed, kw_max_avg, self_reference_avg_sharess, kw_min_avg, </span>
+<span id="cb8-9"><a href="#cb8-9"></a>         kw_avg_avg, self_reference_max_shares, global_subjectivity) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="st">  </span><span class="kw">collect</span>()</span></code></pre></div>
+<h2 id="create-corrplot-of-all-variables">Create CorrPlot of all variables</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>corr &lt;-<span class="st"> </span><span class="kw">cor</span>(<span class="kw">select</span>(data, <span class="kw">everything</span>()), <span class="dt">method =</span> <span class="st">&quot;spearman&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="kw">corrplot</span>(corr, <span class="dt">type =</span> <span class="st">&quot;upper&quot;</span>, <span class="dt">tl.pos =</span> <span class="st">&quot;lt&quot;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="kw">corrplot</span>(corr, <span class="dt">type =</span> <span class="st">&quot;lower&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;number&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">diag =</span> <span class="ot">FALSE</span>, <span class="dt">tl.pos =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<h3 id="analysis">Analysis</h3>
+<p>There is a strong correlation between kw_avg_avg and kw_max_avg, as well as self_reference_max_shares and self_reference_avg_shares. I may include these as interactions effects.</p>
+<h2 id="make-train-and-test-set">Make Train and Test Set</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># set seed</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">set.seed</span>(<span class="dv">130</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co"># Set indices</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>train &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(data), <span class="dt">size =</span><span class="kw">nrow</span>(data)<span class="op">*</span><span class="fl">0.7</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>test &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(data), train)</span>
+<span id="cb10-6"><a href="#cb10-6"></a></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co"># Make Train and Test Sets  </span></span>
+<span id="cb10-8"><a href="#cb10-8"></a></span>
+<span id="cb10-9"><a href="#cb10-9"></a>dataTrain &lt;-<span class="st"> </span>data[train, ]</span>
+<span id="cb10-10"><a href="#cb10-10"></a>dataTest &lt;-<span class="st"> </span>data[test, ]</span></code></pre></div>
+<p><strong>Run Quick Summaries on Train Data</strong></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">summary</span>(dataTrain)</span></code></pre></div>
+<pre><code>##      shares       data_channel_is_socmed   kw_max_avg    
+##  Min.   :    43   Min.   :0.00000        Min.   :  2414  
+##  1st Qu.:  1300   1st Qu.:0.00000        1st Qu.:  3578  
+##  Median :  2000   Median :0.00000        Median :  4686  
+##  Mean   :  4079   Mean   :0.07571        Mean   :  6093  
+##  3rd Qu.:  3600   3rd Qu.:0.00000        3rd Qu.:  6700  
+##  Max.   :617900   Max.   :1.00000        Max.   :237967  
+##  self_reference_avg_sharess   kw_min_avg  
+##  Min.   :     0             Min.   :   0  
+##  1st Qu.:  1000             1st Qu.:   0  
+##  Median :  2228             Median :1291  
+##  Mean   :  5352             Mean   :1280  
+##  3rd Qu.:  5002             3rd Qu.:2200  
+##  Max.   :663600             Max.   :3594  
+##    kw_avg_avg    self_reference_max_shares
+##  Min.   : 1115   Min.   :     0           
+##  1st Qu.: 2519   1st Qu.:  1100           
+##  Median : 3041   Median :  2800           
+##  Mean   : 3314   Mean   :  8944           
+##  3rd Qu.: 3847   3rd Qu.:  7800           
+##  Max.   :36717   Max.   :690400           
+##  global_subjectivity
+##  Min.   :0.0000     
+##  1st Qu.:0.4083     
+##  Median :0.4642     
+##  Mean   :0.4531     
+##  3rd Qu.:0.5205     
+##  Max.   :0.8179
+</code></pre>
+<p>As will be used later, the median number of shares for an article is 1400. From the summaries, you can tell which variables are indicator variables (those with a min of 0 and max of 1; i.e. <code>data_channel_is_socmed</code> and <code>global_subjectivity</code>.) This also shows that the data will need to be standardized when I use the ensemble method.</p>
+<p>Overall, the data is quite varied (especially the average variables). You can see that the <code>shares</code> data and <code>self_reference_avg_share</code> data have the same range.</p>
+<h2 id="compare-fit-stats-function-to-compare-models">Compare Fit Stats Function to compare models</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>compareFitStats &lt;-<span class="st"> </span><span class="cf">function</span>(fit1, fit2){</span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="kw">require</span>(MuMIn)</span>
+<span id="cb13-3"><a href="#cb13-3"></a>  fitStats &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fitStat =</span> <span class="kw">c</span>(<span class="st">&quot;Adj R Square&quot;</span>, <span class="st">&quot;AIC&quot;</span>, <span class="st">&quot;AICc&quot;</span>, <span class="st">&quot;BIC&quot;</span>), </span>
+<span id="cb13-4"><a href="#cb13-4"></a>              <span class="dt">col1 =</span> <span class="kw">round</span>(<span class="kw">c</span>(<span class="kw">summary</span>(fit1)<span class="op">$</span>adj.r.squared, <span class="kw">AIC</span>(fit1), </span>
+<span id="cb13-5"><a href="#cb13-5"></a>                             MuMIn<span class="op">::</span><span class="kw">AICc</span>(fit1), <span class="kw">BIC</span>(fit1)), <span class="dv">3</span>), </span>
+<span id="cb13-6"><a href="#cb13-6"></a>              <span class="dt">col2 =</span> <span class="kw">round</span>(<span class="kw">c</span>(<span class="kw">summary</span>(fit2)<span class="op">$</span>adj.r.squared, <span class="kw">AIC</span>(fit2), </span>
+<span id="cb13-7"><a href="#cb13-7"></a>                             MuMIn<span class="op">::</span><span class="kw">AICc</span>(fit2), <span class="kw">BIC</span>(fit2)), <span class="dv">3</span>))</span>
+<span id="cb13-8"><a href="#cb13-8"></a>  </span>
+<span id="cb13-9"><a href="#cb13-9"></a>  <span class="co">#put names on returned df  </span></span>
+<span id="cb13-10"><a href="#cb13-10"></a>  calls &lt;-<span class="st"> </span><span class="kw">as.list</span>(<span class="kw">match.call</span>())</span>
+<span id="cb13-11"><a href="#cb13-11"></a>  calls[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a>  <span class="kw">names</span>(fitStats[<span class="dv">2</span><span class="op">:</span><span class="dv">3</span>])&lt;-<span class="st"> </span><span class="kw">unlist</span>(calls)</span>
+<span id="cb13-13"><a href="#cb13-13"></a>  fitStats</span>
+<span id="cb13-14"><a href="#cb13-14"></a>}</span></code></pre></div>
+<h1 id="linear-regression-model">Linear Regression Model</h1>
+<p>I will begin by running a regression model with all of the variables.</p>
+<p><strong>allVarFit</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>allVarFit &lt;-<span class="st"> </span><span class="kw">lm</span>(shares <span class="op">~</span>., <span class="dt">data =</span> dataTrain)</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a>allVarFit</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = shares ~ ., data = dataTrain)
+## 
+## Coefficients:
+##                (Intercept)      data_channel_is_socmed  
+##                  1.622e+03                  -5.484e+02  
+##                 kw_max_avg  self_reference_avg_sharess  
+##                 -1.087e-01                   2.270e-02  
+##                 kw_min_avg                  kw_avg_avg  
+##                 -7.756e-02                   8.676e-01  
+##  self_reference_max_shares         global_subjectivity  
+##                  1.329e-03                   5.544e+02
+</code></pre>
+<p>Then, I will create another linear model with the interaction effects to see if it makes a difference.</p>
+<p><strong>intLM</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>intLM &lt;-<span class="st"> </span><span class="kw">lm</span>(shares <span class="op">~</span><span class="st"> </span>data_channel_is_socmed <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="st">                  </span>kw_max_avg <span class="op">+</span><span class="st"> </span>kw_min_avg <span class="op">+</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="st">                  </span>self_reference_avg_sharess <span class="op">+</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="st">                  </span>kw_avg_avg <span class="op">+</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="st">                  </span>self_reference_max_shares <span class="op">+</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="st">                  </span>global_subjectivity <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="st">                  </span>kw_avg_avg<span class="op">:</span>kw_max_avg <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="st">                  </span>self_reference_max_shares<span class="op">:</span>self_reference_avg_sharess, </span>
+<span id="cb16-9"><a href="#cb16-9"></a>                <span class="dt">data =</span> dataTrain</span>
+<span id="cb16-10"><a href="#cb16-10"></a>)</span>
+<span id="cb16-11"><a href="#cb16-11"></a></span>
+<span id="cb16-12"><a href="#cb16-12"></a>intLM</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = shares ~ data_channel_is_socmed + kw_max_avg + kw_min_avg + 
+##     self_reference_avg_sharess + kw_avg_avg + self_reference_max_shares + 
+##     global_subjectivity + kw_avg_avg:kw_max_avg + self_reference_max_shares:self_reference_avg_sharess, 
+##     data = dataTrain)
+## 
+## Coefficients:
+##                                          (Intercept)  
+##                                            2.029e+03  
+##                               data_channel_is_socmed  
+##                                           -6.058e+02  
+##                                           kw_max_avg  
+##                                           -8.043e-02  
+##                                           kw_min_avg  
+##                                           -1.462e-02  
+##                           self_reference_avg_sharess  
+##                                            1.547e-01  
+##                                           kw_avg_avg  
+##                                            6.257e-01  
+##                            self_reference_max_shares  
+##                                           -1.427e-02  
+##                                  global_subjectivity  
+##                                           -2.264e+02  
+##                                kw_max_avg:kw_avg_avg  
+##                                            1.097e-06  
+## self_reference_avg_sharess:self_reference_max_shares  
+##                                           -2.125e-07
+</code></pre>
+<h2 id="comparison-of-two-models">Comparison of Two Models</h2>
+<p>I will compare the two models using the compareFitStats function.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">compareFitStats</span>(allVarFit, intLM)</span></code></pre></div>
+<pre><code>##        fitStat      col1      col2
+## 1 Adj R Square    -0.001     0.001
+## 2          AIC 38148.307 38146.601
+## 3         AICc 38148.413 38146.756
+## 4          BIC 38197.342 38206.532
+</code></pre>
+<h3 id="analysis-1">Analysis</h3>
+<p>Neither model fits the data well. I am going to try a logistic regression model instead.</p>
+<h1 id="logistic-model">Logistic Model</h1>
+<p>First, I need to create a logical variable to reference whether the number of shares is less than 1400 or greater than 1400. I am still going to use the same variables as those in my linear regression attempt.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>data1 &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">logShares =</span> <span class="kw">ifelse</span>(shares <span class="op">&gt;=</span><span class="st"> </span><span class="dv">1400</span>, <span class="dv">1</span>, <span class="dv">0</span>)) </span>
+<span id="cb20-2"><a href="#cb20-2"></a>data1 &lt;-<span class="st"> </span>data1 <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(logShares, <span class="kw">everything</span>()) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>shares)</span>
+<span id="cb20-3"><a href="#cb20-3"></a></span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="co">#Create New Test and Train Set with logShares Variable. Set seed gives same train and test set. </span></span>
+<span id="cb20-5"><a href="#cb20-5"></a></span>
+<span id="cb20-6"><a href="#cb20-6"></a><span class="co"># set seed</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a><span class="kw">set.seed</span>(<span class="dv">130</span>)</span>
+<span id="cb20-8"><a href="#cb20-8"></a><span class="co"># Set indices</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a>train &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(data1), <span class="dt">size =</span><span class="kw">nrow</span>(data1)<span class="op">*</span><span class="fl">0.7</span>)</span>
+<span id="cb20-10"><a href="#cb20-10"></a>test &lt;-<span class="st"> </span><span class="kw">setdiff</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(data1), train)</span>
+<span id="cb20-11"><a href="#cb20-11"></a></span>
+<span id="cb20-12"><a href="#cb20-12"></a><span class="co"># Make Train and Test Sets  </span></span>
+<span id="cb20-13"><a href="#cb20-13"></a></span>
+<span id="cb20-14"><a href="#cb20-14"></a>data1Train &lt;-<span class="st"> </span>data1[train, ]</span>
+<span id="cb20-15"><a href="#cb20-15"></a>data1Test &lt;-<span class="st"> </span>data1[test, ]</span>
+<span id="cb20-16"><a href="#cb20-16"></a></span>
+<span id="cb20-17"><a href="#cb20-17"></a>data1</span></code></pre></div>
+<pre><code>## # A tibble: 2,453 x 8
+##    logShares data_channel_is~ kw_max_avg self_reference_~
+##        &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;
+##  1         1                0      2414.               0 
+##  2         1                0      2414.            1700 
+##  3         1                0      3579.            3700 
+##  4         1                0      2414.            1000 
+##  5         1                0      7054.               0 
+##  6         1                0      3482.            4718.
+##  7         1                1      7250             1700 
+##  8         1                0      3250             1541.
+##  9         1                0      3931.               0 
+## 10         1                0      3833.               0 
+## # ... with 2,443 more rows, and 4 more variables:
+## #   kw_min_avg &lt;dbl&gt;, kw_avg_avg &lt;dbl&gt;,
+## #   self_reference_max_shares &lt;dbl&gt;,
+## #   global_subjectivity &lt;dbl&gt;
+</code></pre>
+<p>Here, I will fit a logistic regression model using the <code>glm()</code> function with the <code>&quot;binomial&quot;</code> family. I will look at how the removal of certain variables changes the AIC value for each model.</p>
+<p><strong>GLM ALL Model</strong></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>glmALL &lt;-<span class="st"> </span><span class="kw">glm</span>(logShares <span class="op">~</span>., <span class="dt">data =</span> data1Train, <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span>)</span>
+<span id="cb22-2"><a href="#cb22-2"></a></span>
+<span id="cb22-3"><a href="#cb22-3"></a>glmALL</span></code></pre></div>
+<pre><code>## 
+## Call:  glm(formula = logShares ~ ., family = &quot;binomial&quot;, data = data1Train)
+## 
+## Coefficients:
+##                (Intercept)      data_channel_is_socmed  
+##                 -4.629e-01                   8.273e-01  
+##                 kw_max_avg  self_reference_avg_sharess  
+##                 -1.953e-05                   1.592e-05  
+##                 kw_min_avg                  kw_avg_avg  
+##                  2.154e-06                   2.374e-04  
+##  self_reference_max_shares         global_subjectivity  
+##                 -4.990e-07                   1.693e+00  
+## 
+## Degrees of Freedom: 1716 Total (i.e. Null);  1709 Residual
+## Null Deviance:       1956 
+## Residual Deviance: 1901  AIC: 1917
+</code></pre>
+<p>I will remove <code>kw_avg_min</code> variable just to be able to compare fits of the two logistic models.</p>
+<p><strong>GLM All but One Model</strong></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>glmAllButOne &lt;-<span class="st"> </span><span class="kw">glm</span>(logShares <span class="op">~</span><span class="st"> </span>data_channel_is_socmed <span class="op">+</span><span class="st"> </span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="st">                  </span>kw_max_avg <span class="op">+</span><span class="st"> </span></span>
+<span id="cb24-3"><a href="#cb24-3"></a><span class="st">                  </span>self_reference_avg_sharess <span class="op">+</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="st">                  </span>kw_avg_avg <span class="op">+</span></span>
+<span id="cb24-5"><a href="#cb24-5"></a><span class="st">                  </span>self_reference_max_shares <span class="op">+</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a><span class="st">                  </span>global_subjectivity, </span>
+<span id="cb24-7"><a href="#cb24-7"></a>                <span class="dt">data =</span> data1Train, </span>
+<span id="cb24-8"><a href="#cb24-8"></a>                <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span></span>
+<span id="cb24-9"><a href="#cb24-9"></a>)</span>
+<span id="cb24-10"><a href="#cb24-10"></a></span>
+<span id="cb24-11"><a href="#cb24-11"></a>glmAllButOne</span></code></pre></div>
+<pre><code>## 
+## Call:  glm(formula = logShares ~ data_channel_is_socmed + kw_max_avg + 
+##     self_reference_avg_sharess + kw_avg_avg + self_reference_max_shares + 
+##     global_subjectivity, family = &quot;binomial&quot;, data = data1Train)
+## 
+## Coefficients:
+##                (Intercept)      data_channel_is_socmed  
+##                 -4.649e-01                   8.279e-01  
+##                 kw_max_avg  self_reference_avg_sharess  
+##                 -1.983e-05                   1.589e-05  
+##                 kw_avg_avg   self_reference_max_shares  
+##                  2.394e-04                  -4.936e-07  
+##        global_subjectivity  
+##                  1.692e+00  
+## 
+## Degrees of Freedom: 1716 Total (i.e. Null);  1710 Residual
+## Null Deviance:       1956 
+## Residual Deviance: 1901  AIC: 1915
+</code></pre>
+<h3 id="analysis-2">Analysis</h3>
+<p>The AIC for the glmAllButOne model is much higher than the all variable model. I will remove another variable, <code>global_subjectivity</code> (next smallest correlation) and see if that helps.</p>
+<p><strong>glm All But Two Model</strong></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>glmAllButTwo &lt;-<span class="st"> </span><span class="kw">glm</span>(logShares <span class="op">~</span><span class="st"> </span>data_channel_is_socmed <span class="op">+</span><span class="st"> </span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="st">                  </span>kw_max_avg <span class="op">+</span><span class="st"> </span></span>
+<span id="cb26-3"><a href="#cb26-3"></a><span class="st">                  </span>self_reference_avg_sharess <span class="op">+</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a><span class="st">                  </span>kw_avg_avg <span class="op">+</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a><span class="st">                  </span>self_reference_max_shares, </span>
+<span id="cb26-6"><a href="#cb26-6"></a>                <span class="dt">data =</span> data1Train, </span>
+<span id="cb26-7"><a href="#cb26-7"></a>                <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a>)</span>
+<span id="cb26-9"><a href="#cb26-9"></a></span>
+<span id="cb26-10"><a href="#cb26-10"></a>glmAllButTwo</span></code></pre></div>
+<pre><code>## 
+## Call:  glm(formula = logShares ~ data_channel_is_socmed + kw_max_avg + 
+##     self_reference_avg_sharess + kw_avg_avg + self_reference_max_shares, 
+##     family = &quot;binomial&quot;, data = data1Train)
+## 
+## Coefficients:
+##                (Intercept)      data_channel_is_socmed  
+##                  1.909e-01                   8.458e-01  
+##                 kw_max_avg  self_reference_avg_sharess  
+##                 -2.434e-05                   2.037e-05  
+##                 kw_avg_avg   self_reference_max_shares  
+##                  2.723e-04                  -7.636e-07  
+## 
+## Degrees of Freedom: 1716 Total (i.e. Null);  1711 Residual
+## Null Deviance:       1956 
+## Residual Deviance: 1915  AIC: 1927
+</code></pre>
+<p>##Analysis<br />
+Remove <code>data_channel_is_socmed</code>.</p>
+<p><strong>glm All But Three Model</strong></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>glmAllButThree &lt;-<span class="st"> </span><span class="kw">glm</span>(logShares <span class="op">~</span><span class="st"> </span></span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="st">                  </span>kw_max_avg <span class="op">+</span><span class="st"> </span></span>
+<span id="cb28-3"><a href="#cb28-3"></a><span class="st">                  </span>self_reference_avg_sharess <span class="op">+</span></span>
+<span id="cb28-4"><a href="#cb28-4"></a><span class="st">                  </span>kw_avg_avg <span class="op">+</span></span>
+<span id="cb28-5"><a href="#cb28-5"></a><span class="st">                  </span>self_reference_max_shares,</span>
+<span id="cb28-6"><a href="#cb28-6"></a>                <span class="dt">data =</span> data1Train, </span>
+<span id="cb28-7"><a href="#cb28-7"></a>                <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span></span>
+<span id="cb28-8"><a href="#cb28-8"></a>)</span>
+<span id="cb28-9"><a href="#cb28-9"></a></span>
+<span id="cb28-10"><a href="#cb28-10"></a>glmAllButThree</span></code></pre></div>
+<pre><code>## 
+## Call:  glm(formula = logShares ~ kw_max_avg + self_reference_avg_sharess + 
+##     kw_avg_avg + self_reference_max_shares, family = &quot;binomial&quot;, 
+##     data = data1Train)
+## 
+## Coefficients:
+##                (Intercept)                  kw_max_avg  
+##                  2.232e-01                  -2.695e-05  
+## self_reference_avg_sharess                  kw_avg_avg  
+##                  1.563e-05                   2.796e-04  
+##  self_reference_max_shares  
+##                  3.522e-06  
+## 
+## Degrees of Freedom: 1716 Total (i.e. Null);  1712 Residual
+## Null Deviance:       1956 
+## Residual Deviance: 1926  AIC: 1936
+</code></pre>
+<p>##Analysis<br />
+Remove <code>self_reference_max_shares</code>.</p>
+<p><strong>glm All But Four Model</strong></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>glmAllButFour &lt;-<span class="st"> </span><span class="kw">glm</span>(logShares <span class="op">~</span><span class="st"> </span></span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="st">                  </span>kw_max_avg <span class="op">+</span><span class="st"> </span></span>
+<span id="cb30-3"><a href="#cb30-3"></a><span class="st">                  </span>self_reference_avg_sharess <span class="op">+</span></span>
+<span id="cb30-4"><a href="#cb30-4"></a><span class="st">                  </span>kw_avg_avg, </span>
+<span id="cb30-5"><a href="#cb30-5"></a>                <span class="dt">data =</span> data1Train, </span>
+<span id="cb30-6"><a href="#cb30-6"></a>                <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span></span>
+<span id="cb30-7"><a href="#cb30-7"></a>)</span>
+<span id="cb30-8"><a href="#cb30-8"></a>glmAllButFour</span></code></pre></div>
+<pre><code>## 
+## Call:  glm(formula = logShares ~ kw_max_avg + self_reference_avg_sharess + 
+##     kw_avg_avg, family = &quot;binomial&quot;, data = data1Train)
+## 
+## Coefficients:
+##                (Intercept)                  kw_max_avg  
+##                  2.297e-01                  -2.678e-05  
+## self_reference_avg_sharess                  kw_avg_avg  
+##                  2.122e-05                   2.777e-04  
+## 
+## Degrees of Freedom: 1716 Total (i.e. Null);  1713 Residual
+## Null Deviance:       1956 
+## Residual Deviance: 1927  AIC: 1935
+</code></pre>
+<h2 id="analysis-3">Analysis</h2>
+<p>Did not help. Will keep <code>self_reference_max_shares</code>.</p>
+<h2 id="comparison-of-all-four-logistic-models">Comparison of all Four Logistic Models</h2>
+<p>I will predict the test data and compare the RMSEs of those.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="co">#Make predictions  </span></span>
+<span id="cb32-2"><a href="#cb32-2"></a>predALL &lt;-<span class="st"> </span><span class="kw">predict</span>(glmALL, <span class="dt">newdata =</span> data1Test, <span class="dt">type =</span> <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb32-3"><a href="#cb32-3"></a>predALLbutOne &lt;-<span class="st"> </span><span class="kw">predict</span>(glmAllButOne, <span class="dt">newdata =</span> data1Test, <span class="dt">type =</span> <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb32-4"><a href="#cb32-4"></a>predALLbutTwo &lt;-<span class="st"> </span><span class="kw">predict</span>(glmAllButTwo, <span class="dt">newdata =</span> data1Test, <span class="dt">type =</span> <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb32-5"><a href="#cb32-5"></a>predALLbutThree &lt;-<span class="st"> </span><span class="kw">predict</span>(glmAllButThree, <span class="dt">newdata =</span> data1Test, <span class="dt">type =</span> <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb32-6"><a href="#cb32-6"></a></span>
+<span id="cb32-7"><a href="#cb32-7"></a><span class="co">#Calculate RMSE  </span></span>
+<span id="cb32-8"><a href="#cb32-8"></a>AllMSE &lt;-<span class="st"> </span><span class="kw">rmse</span>(data1Test<span class="op">$</span>logShares, predALL)</span>
+<span id="cb32-9"><a href="#cb32-9"></a>OneMSE &lt;-<span class="st"> </span><span class="kw">rmse</span>(data1Test<span class="op">$</span>logShares, predALLbutOne)</span>
+<span id="cb32-10"><a href="#cb32-10"></a>TwoMSE &lt;-<span class="st"> </span><span class="kw">rmse</span>(data1Test<span class="op">$</span>logShares, predALLbutTwo)</span>
+<span id="cb32-11"><a href="#cb32-11"></a>ThreeMSE &lt;-<span class="st"> </span><span class="kw">rmse</span>(data1Test<span class="op">$</span>logShares, predALLbutThree)</span>
+<span id="cb32-12"><a href="#cb32-12"></a></span>
+<span id="cb32-13"><a href="#cb32-13"></a>matMSE &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(AllMSE, OneMSE, TwoMSE, ThreeMSE), <span class="dt">nrow =</span> <span class="dv">1</span>, <span class="dt">ncol =</span> <span class="dv">4</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb32-14"><a href="#cb32-14"></a></span>
+<span id="cb32-15"><a href="#cb32-15"></a>matMSE</span></code></pre></div>
+<pre><code>##           [,1]      [,2]      [,3]     [,4]
+## [1,] 0.7407534 0.7405828 0.7609295 0.806258
+</code></pre>
+<h3 id="analysis-4">Analysis</h3>
+<p>The glmAllButThree produces the smallest MSE. I will use this as my model for the data. The glmAllButThree also produces the highest AIC value.</p>
+<h1 id="ensemble-model">Ensemble Model</h1>
+<p>From the past homework assigment, it seems that each of the ensemble methods that we covered are equally efficient. I am going to use the Random Forest model to fit my data. Overall, Random Forest is better than bagging and boosting trees take longer to do. I will add a class variable (less than 1400, more than 1400) that I will predict on the test data.</p>
+<h2 id="fix-train-and-test-data">Fix Train and Test Data</h2>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>dataTrain &lt;-<span class="st"> </span>dataTrain <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">group =</span> <span class="kw">ifelse</span>(shares <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1400</span>, <span class="st">&quot;less than 1400&quot;</span>, <span class="st">&quot;more than 1400&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a><span class="st">  </span><span class="kw">select</span>(group, kw_max_avg, self_reference_avg_sharess, </span>
+<span id="cb34-3"><a href="#cb34-3"></a>         kw_min_avg, kw_avg_avg, self_reference_max_shares, </span>
+<span id="cb34-4"><a href="#cb34-4"></a>         global_subjectivity) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">collect</span>()</span>
+<span id="cb34-5"><a href="#cb34-5"></a></span>
+<span id="cb34-6"><a href="#cb34-6"></a>dataTrain<span class="op">$</span>group &lt;-<span class="st"> </span><span class="kw">as.factor</span>(dataTrain<span class="op">$</span>group)</span>
+<span id="cb34-7"><a href="#cb34-7"></a></span>
+<span id="cb34-8"><a href="#cb34-8"></a>dataTrain</span></code></pre></div>
+<pre><code>## # A tibble: 1,717 x 7
+##    group kw_max_avg self_reference_~ kw_min_avg kw_avg_avg
+##    &lt;fct&gt;      &lt;dbl&gt;            &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1 less~      6414.            9169.      2617.      3770.
+##  2 more~      5526.               0       2600       3672.
+##  3 more~      3575.            4995        789       2690.
+##  4 less~      3510.            1100       2198.      2844.
+##  5 more~      5246.           70750          0       3541.
+##  6 more~      3488.            1300       2169.      2646.
+##  7 more~      4124.               0          0       2309.
+##  8 more~      8933.           26300          0       3950.
+##  9 more~      2631.               0          0       1444.
+## 10 more~      5853.            6000          0       3787.
+## # ... with 1,707 more rows, and 2 more variables:
+## #   self_reference_max_shares &lt;dbl&gt;,
+## #   global_subjectivity &lt;dbl&gt;
+</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>dataTest &lt;-<span class="st"> </span>dataTest <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">group =</span><span class="kw">ifelse</span>(shares <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1400</span>, <span class="st">&quot;less than 1400&quot;</span>, <span class="st">&quot;more than 1400&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a><span class="st">  </span><span class="kw">select</span>(group, kw_max_avg, self_reference_avg_sharess, </span>
+<span id="cb36-3"><a href="#cb36-3"></a>         kw_min_avg, kw_avg_avg, self_reference_max_shares, </span>
+<span id="cb36-4"><a href="#cb36-4"></a>         global_subjectivity) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">collect</span>()</span>
+<span id="cb36-5"><a href="#cb36-5"></a></span>
+<span id="cb36-6"><a href="#cb36-6"></a>dataTest<span class="op">$</span>group &lt;-<span class="st"> </span><span class="kw">as.factor</span>(dataTest<span class="op">$</span>group)</span></code></pre></div>
+<p><strong>Random Forest Model</strong></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="co"># train control parameters  </span></span>
+<span id="cb37-2"><a href="#cb37-2"></a>trctrl &lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;repeatedcv&quot;</span>, <span class="dt">number =</span> <span class="dv">10</span>, <span class="dt">repeats =</span> <span class="dv">3</span>)</span>
+<span id="cb37-3"><a href="#cb37-3"></a></span>
+<span id="cb37-4"><a href="#cb37-4"></a>rfFit&lt;-<span class="st"> </span><span class="kw">train</span>(group<span class="op">~</span>., <span class="dt">data =</span> dataTrain, <span class="dt">method =</span> <span class="st">&quot;rf&quot;</span>, <span class="dt">trControl =</span> trctrl, <span class="dt">preProcess =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))</span></code></pre></div>
+<p><strong>Predict Data with rfFit</strong></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>rfPred &lt;-<span class="st"> </span><span class="kw">predict</span>(rfFit, <span class="kw">select</span>(dataTest, <span class="op">-</span><span class="st">&quot;group&quot;</span>))</span></code></pre></div>
+<p><strong>Compare Predictions to Actual</strong></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>fullTbl &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">data.frame</span>(rfPred, dataTest<span class="op">$</span>group))</span>
+<span id="cb39-2"><a href="#cb39-2"></a></span>
+<span id="cb39-3"><a href="#cb39-3"></a>fullTbl</span></code></pre></div>
+<pre><code>##                 dataTest.group
+## rfPred           less than 1400 more than 1400
+##   less than 1400             59             54
+##   more than 1400            162            461
+</code></pre>
+<p><strong>Find MisClassification Rate</strong></p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>rfMis &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(<span class="kw">diag</span>(fullTbl)<span class="op">/</span><span class="kw">sum</span>(fullTbl))</span>
+<span id="cb41-2"><a href="#cb41-2"></a></span>
+<span id="cb41-3"><a href="#cb41-3"></a>rfMis</span></code></pre></div>
+<pre><code>## [1] 0.2934783
+</code></pre>
+<h3 id="analysis-5">Analysis</h3>
+<p>This a pretty large misclassification rate. I will choose less variables to see if it helps.</p>
+<p><strong>One Variable Random Forest</strong></p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="co"># no kw_min_avg, has lowest correlation </span></span>
+<span id="cb43-2"><a href="#cb43-2"></a>rf1 &lt;-<span class="st"> </span><span class="kw">train</span>(group <span class="op">~</span><span class="st"> </span>kw_max_avg <span class="op">+</span><span class="st"> </span>self_reference_avg_sharess <span class="op">+</span><span class="st">  </span></span>
+<span id="cb43-3"><a href="#cb43-3"></a><span class="st">         </span><span class="op">+</span><span class="st"> </span>kw_avg_avg <span class="op">+</span><span class="st"> </span>self_reference_max_shares <span class="op">+</span><span class="st">  </span></span>
+<span id="cb43-4"><a href="#cb43-4"></a><span class="st">         </span>global_subjectivity, <span class="dt">data =</span> dataTrain, <span class="dt">method =</span> <span class="st">&quot;rf&quot;</span>, <span class="dt">trControl =</span> trctrl, <span class="dt">preProcess =</span> <span class="kw">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>))  </span></code></pre></div>
+<p><strong>Predict Data with rf1</strong></p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>rf1Pred &lt;-<span class="st"> </span><span class="kw">predict</span>(rf1, <span class="kw">select</span>(dataTest, <span class="op">-</span><span class="st">&quot;group&quot;</span>))  </span></code></pre></div>
+<p><strong>Compare Predictions to Actual</strong></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>fullTbl &lt;-<span class="st"> </span><span class="kw">table</span>(<span class="kw">data.frame</span>(rf1Pred, dataTest<span class="op">$</span>group))  </span>
+<span id="cb45-2"><a href="#cb45-2"></a></span>
+<span id="cb45-3"><a href="#cb45-3"></a>fullTbl</span></code></pre></div>
+<pre><code>##                 dataTest.group
+## rf1Pred          less than 1400 more than 1400
+##   less than 1400             56             59
+##   more than 1400            165            456
+</code></pre>
+<p><strong>Find MisClassification Rate</strong></p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>rfMis &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(<span class="kw">diag</span>(fullTbl)<span class="op">/</span><span class="kw">sum</span>(fullTbl))</span>
+<span id="cb47-2"><a href="#cb47-2"></a></span>
+<span id="cb47-3"><a href="#cb47-3"></a>rfMis</span></code></pre></div>
+<pre><code>## [1] 0.3043478
+</code></pre>
+<h3 id="analysis-6">Analysis</h3>
+<p>This does not help. I will keep my first Random Forest Model for prediction.</p>
+<h1 id="models-used">Models Used</h1>
+<p>Overall, I have chosen the following models for my data.</p>
+<ol>
+<li>glmAllbutThree: Logistic Regression Model</li>
+<li>rfFit : Random Forest Model</li>
+</ol>
+
+</body>
+</html>
