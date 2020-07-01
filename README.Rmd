@@ -1,0 +1,384 @@
+---
+title: "ST 558 Project 2"
+author: "Sarah McLaughlin"
+date: "6/22/2020"
+output: 
+  rmarkdown::github_document:
+     toc: yes
+     toc_depth: 2
+params: 
+   day : "monday"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
+```
+
+```{r libraries, echo = FALSE, message = FALSE}
+library("rmarkdown")
+library("tidyverse")
+library("knitr")
+library("caret")
+library("corrplot")
+library("MuMIn")
+library("Metrics")
+library("GGally")
+
+```  
+
+# Introduction  
+The data that will be used in this project is from the *Online News Popularity Data Set* from the *UCI Machine Learning Repository*. The goal of this project is to create two models (one a linear model, the other an ensemble model) that will be used to predict the number of shares/the probability/if an article has more than 1400 shares. How I picked which variables is detailed below. 
+
+The data is from Mashable (www.mashable.com) and contains the statistics for articles that were written and published on their website. There are statistics for 39,645 articles. 
+
+In this project, I will attempt to create a linear regression model for the data, comparing the Adjusted R Squared values of the models. Due to the very low Adjusted R Squared models, I will instead move to a logistic model. These models produce very small RMSEs. 
+
+I will also fit a Random Forest Classification model to the data. I have attempted a few different Random Forest Models but due to computing speed, have only included two models. 
+
+# Data  
+Here, I will bring in the data that will be used in this project. With the data, we are trying to predict the number of shares a particular article will receive.  
+
+## Read in data  
+```{r data}
+data <- read_csv("OnlineNewsPopularity.csv")
+
+#Look at column names  
+attributes(data)$names
+
+```  
+
+## Exploratory Data Analysis  
+Here, I will do a basic analysis of my variables to see basic trends, and correlations. 
+
+*Correlation of all Variables*  
+```{r corr plot}
+data <- data %>% select(-url)
+
+correlation <- cor(data, method = "spearman")
+```
+
+Take only those with a correlation to shares of > 0.06.  
+
+```{r data1 filter}
+shareCor <- correlation[60, ] >= 0.06
+
+corMax <- correlation[60, shareCor]
+
+corMax
+```
+## Filter Data to Only Include these Variables  
+I will not include the weekday_is_ variables nor the indicator variables.  
+```{r data filer 1}
+data1 <- data %>% 
+  select(shares, kw_max_avg, self_reference_avg_sharess, kw_min_avg, 
+         kw_avg_avg, self_reference_max_shares, global_subjectivity, num_hrefs, num_imgs, num_keywords, kw_max_min, kw_avg_min, LDA_03, global_sentiment_polarity, global_rate_positive_words)%>% collect()
+```
+
+**Scale Data**  
+```{r scale Data}
+scaleData <- scale(data1)
+```
+
+## Create Scatterplots of these Variables Against Shares  
+```{r scatter data}
+dataGathered <- scaleData %>% as_data_frame() %>% 
+  gather(key = "variable", value = "value", -shares)
+
+ggplot(dataGathered, aes(x = value, y = shares)) + geom_point() + facet_wrap(~variable)
+
+
+```
+
+I will take a closer look at a few of these variables.  
+```{r scatter data 2}
+dataGathered <- dataGathered %>% filter(variable %in% c("kw_avg_avg", "kw_avg_min", "kw_min_avg", "LDA_03", "num_imgs", "num_keywords"))
+
+ggplot(dataGathered, aes(x = value, y = shares)) + geom_point() + facet_wrap(~variable)
+```
+
+I will use these six variables in my regression. The data will be separated by the weekday published and the response is number of shares.  
+
+1. shares  
+    + (target variable)  
+2. kw_avg_avg  
+    + (average keyword in average number of shares)  
+3. kw_avg_min  
+    + (worst keyword in average number of shares)  
+4. kw_min_avg  
+    + (average keyword in minimum number of shares)  
+5. LDA_03  
+    + (closeness to LDA topic 1)  
+6. num_imgs  
+    + (number of images)  
+7. num_keywords  
+    + (number of keywords in metadata)  
+
+## Select only needed variables from data for specific day  
+```{r select datat}
+day1 <-paste0("weekday_is_", params$day)
+
+day <- as.name(day1)
+
+data <- data %>% 
+  filter(eval(day) == 1) %>% 
+  #select only needed variables.
+  select(shares, kw_avg_avg, kw_avg_min, kw_min_avg, LDA_03, num_imgs, num_keywords) %>% 
+  collect()
+```
+
+## Make Train and Test Set  
+```{r train and test}
+# set seed
+set.seed(130)
+# Set indices
+train <- sample(1:nrow(data), size =nrow(data)*0.7)
+test <- setdiff(1:nrow(data), train)
+
+# Make Train and Test Sets  
+
+dataTrain <- data[train, ]
+dataTest <- data[test, ]
+```
+
+**Run Quick Summaries on Train Data**  
+```{r summary train data}
+summary(dataTrain)
+```
+
+# Linear Regression Model  
+I will begin by running a regression model with all of the variables.  
+
+**allVarFit**  
+```{r all var linear model}
+allVarFit <- lm(shares ~., data = dataTrain)
+
+summary(allVarFit)
+```  
+### Analysis  
+The adjusted R-Squared is very small.  
+
+I will create another linear model with one less variable (-LDA_03). 
+
+**OneLM**  
+```{r intLM}
+OneLM <- lm(shares ~ . -LDA_03,  
+                data = dataTrain
+)
+
+summary(OneLM)
+
+```
+
+## Comparison of Two Models  
+I will compare the two models using the compareFitStats function.  
+```{r #1 comparison, eval = FALSE}
+compareFitStats(allVarFit, OneLM)
+```
+
+### Analysis  
+Neither model fits the data well. I am going to try just kw_avg_avg.  
+```{r kwAVGFit }
+
+kwAVGFit <- lm(shares ~ kw_avg_avg, data = dataTrain)
+
+summary(kwAVGFit)
+
+```  
+### Analysis  
+None of these models fit the data. I will instead use a logistic model.  
+# Logistic Model  
+First, I need to create a variable to reference whether the number of shares is less than 1400 or greater than 1400. I am still going to use the same variables as those in my linear regression attempt.  
+```{r logShares variable}
+data1 <- data %>% mutate(logShares = ifelse(shares >= 1400, 1, 0)) 
+data1 <- data1 %>% select(logShares, everything()) %>% select(-shares)
+
+#Create New Test and Train Set with logShares Variable. Set seed gives same train and test set. 
+
+# set seed
+set.seed(130)
+# Set indices
+train <- sample(1:nrow(data1), size =nrow(data1)*0.7)
+test <- setdiff(1:nrow(data1), train)
+
+# Make Train and Test Sets  
+
+data1Train <- data1[train, ]
+data1Test <- data1[test, ]
+
+data1
+```
+
+Here, I will fit a logistic regression model using the `glm()` function with the `"binomial"` family. I will look at how the removal of certain variables changes the AIC value for each model. 
+
+**GLM ALL Model**
+```{r glmALL}
+glmALL <- glm(logShares ~., data = data1Train, family = "binomial")
+
+glmALL
+
+summary(glmALL)
+```
+
+I will remove `kw_avg_min`  and `kw_min_avg` variable just to be able to compare fits of the two logistic models.  
+
+**GLM2Fit Model**  
+```{r glm2Fit}
+glm2Fit <- glm(logShares ~ kw_avg_avg + LDA_03 + num_imgs + num_keywords,  
+                data = data1Train, 
+                family = "binomial"
+)
+
+summary(glm2Fit)
+```
+
+### Analysis  
+The AIC is about the same for both models. I will remove LDA_03 from the first model.  
+
+**glm3Fit Model **  
+```{r glm3Fit}
+glm3Fit <- glm(logShares ~. -LDA_03, 
+                data = data1Train, 
+                family = "binomial"
+)
+
+summary(glm3Fit)
+```
+
+##Analysis  
+AIC is slightly higher. I will now remove kw_avg_min this time.  
+
+**glm4Fit Model **  
+```{r glm4Fit}
+glm4Fit <- glm(logShares ~. -LDA_03 -kw_avg_min, 
+                data = data1Train, 
+                family = "binomial"
+)
+
+summary(glm4Fit)
+```
+
+##Analysis  
+Did not help. For my last model, I will just use num_keywords.  
+
+**glm5Fit**  
+```{r glm5Fit}
+glm5Fit <- glm(logShares ~ num_keywords, 
+                data = data1Train, 
+                family = "binomial"
+)
+summary(glm5Fit)
+```
+
+## Analysis  
+This produced the best model thus far.  
+
+## Comparison of all 5 Models  
+I will predict the test data and compare the RMSEs of those.  
+
+```{r predict log}
+#Make predictions  
+predALL <- predict(glmALL, newdata = data1Test, type = "link")
+pred2 <- predict(glm2Fit, newdata = data1Test, type = "link")
+pred3 <- predict(glm3Fit, newdata = data1Test, type = "link")
+pred4 <- predict(glm4Fit, newdata = data1Test, type = "link")
+pred5 <- predict(glm5Fit, newdata = data1Test, type = "link")
+
+#Calculate RMSE  
+AllMSE <- rmse(data1Test$logShares, predALL)
+TwoMSE <- rmse(data1Test$logShares, pred2)
+ThreeMSE <- rmse(data1Test$logShares, pred3)
+FourMSE <- rmse(data1Test$logShares, pred4)
+FiveMSE <- rmse(data1Test$logShares, pred5)
+
+
+matMSE <- matrix(c(AllMSE, TwoMSE, ThreeMSE, FourMSE, FiveMSE), nrow = 1, ncol = 5, byrow = TRUE)
+
+matMSE
+```
+
+### Analysis  
+The glm5Fit produces the smallest MSE. I will use this as my model for the data. The glm5Fit also produces the highest AIC value. 
+
+# Ensemble Model  
+From the past homework assigment, it seems that each of the ensemble methods that we covered are equally efficient. I am going to use the Random Forest model to fit my data. Overall, Random Forest is better than bagging and boosting trees take longer to do. I will add a class variable (less than 1400, more than 1400) that I will predict on the test data.  
+
+## Fix Train and Test Data  
+```{r fix train and test}
+dataTrain <- dataTrain %>% mutate(group = ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
+  select(group, everything()) %>% collect()
+
+dataTrain$group <- as.factor(dataTrain$group)
+
+dataTrain
+
+dataTest <- dataTest %>% mutate(group =ifelse(shares <= 1400, "less than 1400", "more than 1400")) %>%
+  select(group, everything()) %>% collect()
+
+dataTest$group <- as.factor(dataTest$group)
+```
+
+
+**Random Forest Model**  
+```{r rfFit}
+# train control parameters  
+trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+
+rfFit<- train(group~., data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))
+```
+
+**Predict Data with rfFit**  
+```{r predict rfFit}
+rfPred <- predict(rfFit, select(dataTest, -"group"))
+
+head(rfPred)
+```
+
+**Compare Predictions to Actual**  
+```{r compare pred}
+fullTbl <- table(data.frame(rfPred, dataTest$group))
+
+fullTbl
+```
+
+**Find MisClassification Rate** 
+```{r misClass Rate}
+rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
+
+rfMis
+```
+
+### Analysis  
+This misclassification rate is suspiciously low. 
+
+**Another Random Forest**  
+```{r rf2}
+rf2 <- train(group ~ num_keywords + kw_avg_avg + kw_min_avg + num_imgs, data = dataTrain, method = "rf", trControl = trctrl, preProcess = c("center", "scale"))  
+```
+
+**Predict Data with rf2**  
+```{r rf1 pred}
+rf2Pred <- predict(rf2, select(dataTest, -"group"))  
+```
+
+**Compare Predictions to Actual**  
+```{r rf1 compare}
+fullTbl <- table(data.frame(rf2Pred, dataTest$group))  
+
+fullTbl
+```
+
+**Find MisClassification Rate** 
+```{r misClass rf1 Rate}
+rfMis <- 1 - sum(diag(fullTbl)/sum(fullTbl))
+
+rfMis
+```  
+
+### Analysis  
+This does not help. I will keep my first Random Forest Model for prediction.  
+
+# Models Used  
+Overall, I have chosen the following models for my data.  
+
+1. glm5Fit: Logistic Regression Model  
+2. rfFit : Random Forest Model  
