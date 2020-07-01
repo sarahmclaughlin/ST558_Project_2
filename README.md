@@ -3,6 +3,7 @@ ST 558 Project 2
 Sarah McLaughlin
 6/22/2020
 
+  - [Links to Other MD Files by Day](#links-to-other-md-files-by-day)
   - [Introduction](#introduction)
   - [Data](#data)
       - [Read in data](#read-in-data)
@@ -21,6 +22,16 @@ Sarah McLaughlin
   - [Ensemble Model](#ensemble-model)
       - [Fix Train and Test Data](#fix-train-and-test-data)
   - [Models Used](#models-used)
+
+# Links to Other MD Files by Day
+
+The analysis for Monday is available [here](monday.md). The analysis for
+Tuesday is available [here](tuesday.md). The analysis for Wednesday is
+available [here](wednesday.md). The analysis for Thursday is available
+[here](thursday.md). The analysis for Friday is available
+[here](friday.md). The analysis for Saturday is available
+[here](saturday.md). The analysis for Sunday is available
+[here](sunday.md).
 
 # Introduction
 
