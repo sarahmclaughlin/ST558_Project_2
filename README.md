@@ -18,10 +18,12 @@ Sarah McLaughlin
   - [Linear Regression Model](#linear-regression-model)
       - [Comparison of Two Models](#comparison-of-two-models)
       - [Analysis](#analysis-4)
+      - [Analysis](#analysis-5)
+      - [Analysis](#analysis-6)
       - [Comparison of all 5 Models](#comparison-of-all-5-models)
   - [Ensemble Model](#ensemble-model)
       - [Fix Train and Test Data](#fix-train-and-test-data)
-  - [Models Used](#models-used)
+  - [Models Used and Conclusions](#models-used-and-conclusions)
 
 # Links to Other MD Files by Day
 
@@ -566,7 +568,8 @@ summary(glm3Fit)
     ## 
     ## Number of Fisher Scoring iterations: 4
 
-\#\#Analysis  
+## Analysis
+
 AIC is slightly higher. I will now remove kw\_avg\_min this time.
 
 **glm4Fit Model **
@@ -607,7 +610,8 @@ summary(glm4Fit)
     ## 
     ## Number of Fisher Scoring iterations: 4
 
-\#\#Analysis  
+## Analysis
+
 Did not help. For my last model, I will just use num\_keywords.
 
 **glm5Fit**
@@ -811,9 +815,18 @@ rfMis
 This does not help. I will keep my first Random Forest Model for
 prediction.
 
-# Models Used
+# Models Used and Conclusions
 
-Overall, I have chosen the following models for my data.
+Overall, I have chosen the following models for my data. This is further
+explained in my blog post. In general, I had more issues with the linear
+model than the ensemble model. The picking of which variables to use is
+overwhelming with the large number of variables. It is frustrating to
+know how to code something but the results suggest otherwise. Also, I
+could not find issue with my first Random Forest Model even though my
+misclassification rate was suspiciously low. I better understand
+ensemble models from this project.
+
+Here are the two models I have picked:
 
 1.  glm5Fit: Logistic Regression Model  
 2.  rfFit : Random Forest Model
